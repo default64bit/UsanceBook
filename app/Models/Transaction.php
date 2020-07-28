@@ -12,7 +12,7 @@ class Transaction extends Model
      * @var array
      */
     protected $fillable = [
-        'title', 'amount', 'type', 'date', 'user_id', 'for_user_id'
+        'title', 'amount', 'type', 'date', 'user_id', 'for_user_id', 'card_id'
     ];
 
     /*relation*/
@@ -24,6 +24,9 @@ class Transaction extends Model
     }
     public function groups(){
         return $this->hasMany(TransactionGroup::class,'transaction_id');
+    }
+    public function card(){
+        return $this->belongsTo(Card::class,'card_id');
     }
     /*end relation*/
 }

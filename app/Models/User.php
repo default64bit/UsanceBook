@@ -59,6 +59,9 @@ class User extends Authenticatable
     public function groups(){
         return $this->hasMany(Group::class,'owner_id');
     }
+    public function cards(){
+        return $this->hasMany(Card::class,'user_id');
+    }
     /*end relation*/
 
     public function findForPassport($username){
