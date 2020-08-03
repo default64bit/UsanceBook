@@ -1982,25 +1982,46 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _TopMenu__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TopMenu */ "./resources/js/components/layouts/TopMenu.vue");
 //
 //
 //
 //
 //
 //
-
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Header",
-  components: {
-    'top-menu': _TopMenu__WEBPACK_IMPORTED_MODULE_0__["default"]
-  },
   data: function data() {
-    return {};
+    return {
+      theme: 'light'
+    };
   },
   created: function created() {},
   mounted: function mounted() {},
-  methods: {}
+  methods: {
+    toggleTheme: function toggleTheme() {
+      this.theme = this.theme == 'dark' ? 'light' : 'dark';
+    }
+  }
 });
 
 /***/ }),
@@ -2016,6 +2037,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Header */ "./resources/js/components/layouts/Header.vue");
 /* harmony import */ var _Footer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Footer */ "./resources/js/components/layouts/Footer.vue");
+/* harmony import */ var _TopMenu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TopMenu */ "./resources/js/components/layouts/TopMenu.vue");
 //
 //
 //
@@ -2029,7 +2051,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2037,17 +2059,19 @@ __webpack_require__.r(__webpack_exports__);
   props: ['header', 'footer'],
   components: {
     'main-header': _Header__WEBPACK_IMPORTED_MODULE_0__["default"],
-    'main-footer': _Footer__WEBPACK_IMPORTED_MODULE_1__["default"]
-  },
-  mounted: function mounted() {
-    this.showHeader = this.header == false ? false : true;
-    this.showFooter = this.footer == false ? false : true;
+    'main-footer': _Footer__WEBPACK_IMPORTED_MODULE_1__["default"],
+    'top-menu': _TopMenu__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   data: function data() {
     return {
       showHeader: true,
-      showFooter: true
+      showFooter: true,
+      logged_in: false
     };
+  },
+  mounted: function mounted() {
+    this.showHeader = this.header == false ? false : true;
+    this.showFooter = this.footer == false ? false : true;
   }
 });
 
@@ -20005,9 +20029,68 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("header", { staticClass: "header" })
+  return _c("header", { staticClass: "header" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _vm._m(1),
+    _vm._v(" "),
+    _c(
+      "span",
+      {
+        staticClass: "btn theme_switch",
+        on: {
+          click: function($event) {
+            return _vm.toggleTheme()
+          }
+        }
+      },
+      [
+        _c("i", {
+          staticClass: "fas",
+          class: {
+            "fa-moon dark": _vm.theme == "light",
+            "fa-sun-haze light": _vm.theme == "dark"
+          }
+        })
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "right_side" },
+      [_c("router-link", { attrs: { to: "/register" } }, [_vm._v("Register")])],
+      1
+    )
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "left_side" }, [
+      _c("div", { staticClass: "date" }, [
+        _c("span", [_c("b", { staticClass: "day_number" }, [_vm._v("25")])]),
+        _vm._v(" "),
+        _c("span", [
+          _c("b", { staticClass: "day_name" }, [_vm._v("Friday")]),
+          _vm._v(" "),
+          _c("b", { staticClass: "month" }, [_vm._v("March")]),
+          _vm._v(" "),
+          _c("b", { staticClass: "year" }, [_vm._v("2020")])
+        ])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "logo" }, [
+      _c("h1", [_vm._v("Usance Book")])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -20035,9 +20118,9 @@ var render = function() {
     [
       _vm.showHeader ? _c("main-header") : _vm._e(),
       _vm._v(" "),
-      _c("div", { staticClass: "wrapper" }, [
-        _c("div", { staticClass: "main_content" }, [_vm._t("content")], 2)
-      ]),
+      _vm.logged_in ? _c("top-menu") : _vm._e(),
+      _vm._v(" "),
+      _c("div", { staticClass: "main_content" }, [_vm._t("content")], 2),
       _vm._v(" "),
       _vm.showFooter ? _c("main-footer") : _vm._e()
     ],

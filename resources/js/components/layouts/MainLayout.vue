@@ -2,10 +2,9 @@
     <div class="main_body">
 
         <main-header v-if="showHeader"></main-header>
-        <div class="wrapper">
-            <div class="main_content">
-                <slot name="content"></slot>
-            </div>
+        <top-menu v-if="logged_in"></top-menu>
+        <div class="main_content">
+            <slot name="content"></slot>
         </div>
         <main-footer v-if="showFooter"></main-footer>
 
@@ -15,6 +14,7 @@
 <script>
     import Header from './Header'
     import Footer from './Footer'
+    import TopMenu from './TopMenu'
 
     export default {
         name: "MainLayout",
@@ -22,16 +22,18 @@
         components: {
             'main-header': Header,
             'main-footer': Footer,
-        },
-        mounted(){
-            this.showHeader = this.header==false ? false : true;
-            this.showFooter = this.footer==false ? false : true;
+            'top-menu': TopMenu,
         },
         data(){
             return{
                 showHeader: true,
                 showFooter: true,
+                logged_in: false,
             }
+        },
+        mounted(){
+            this.showHeader = this.header==false ? false : true;
+            this.showFooter = this.footer==false ? false : true;
         },
     }
 </script>

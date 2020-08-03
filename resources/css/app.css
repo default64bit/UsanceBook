@@ -1,10 +1,106 @@
 @tailwind base;
 
 :root{
-    
+    --main_background_color: #fff;
+    --main_text_color: #000;
+    --main_border_color: #c4c4c4;
+
+    --secondary_button_color: #333;
 }
 
-/*  */
+@font-face{ font-family: "Vazir"; src: url('../fonts/Vazir.ttf') format('truetype'); }
+@font-face{ font-family: "Roboto"; src: url('../fonts/Roboto-Regular.ttf') format('truetype'); }
+@font-face{ font-family: "Times"; src: url('../fonts/Times-New-Roman.ttf') format('truetype'); }
+
+html{
+    font-family: 'Vazir','Times'; letter-spacing: 1px;
+    outline: 0; color: var(--main_text_color);
+}
+input,textarea,button,select,body{outline: 0 !important;}
+a{
+    border-bottom: 2px solid var(--main_border_color);
+}
+
+.main_body{
+    display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
+    padding: 0 2rem; scroll-behavior: smooth;
+    background-color: var(--main_background_color);
+}
+.main_body .main_content{
+    position: relative;
+    width: 100%;
+}
+.btn{
+    cursor: pointer; transition: all .3s;
+}
+.btn:hover{
+    box-shadow: 0px 20px 30px -15px rgba(0,0,0,.25);
+}
+
+/* Header ============================================ */
+.header{
+    display: flex; flex-direction: row; justify-content: center; align-items: center;
+    width: 100%; height: 100px; padding: 3.5rem 0;
+    position: relative;
+    border-bottom: 2px solid var(--main_border_color);
+}
+
+.header .left_side{
+    margin-left: 0; margin-right: auto;
+}
+.header .left_side .date{
+    display: flex; flex-direction: row; justify-content: center; align-items: center;
+}
+.header .left_side .date span{
+    display: flex; flex-direction: column; justify-content: left; align-items: left;
+}
+.header .left_side .date span:nth-child(2){
+    margin-top: -5px;
+}
+.header .left_side .date b{
+    font-weight: normal;
+}
+.header .left_side .date span:nth-child(2) b{ height: 20px; }
+.header .left_side .date .day_number{
+    font-size: 4rem;
+}
+.header .left_side .date .day_name{}
+.header .left_side .date .month{}
+.header .left_side .date .year{}
+
+.header .logo{
+    position: absolute;
+}
+.header .logo h1{
+    font-size: 3rem; font-weight: bold;
+    margin: auto; border: 2px solid var(--main_border_color);
+    border-left: 0; border-right: 0;
+}
+
+.header .theme_switch{
+    display: flex; justify-content: center; align-items: center;
+    position: absolute; right: calc(50% - 190px);
+    width: 2rem; height: 2rem;
+    background-color: var(--secondary_button_color);
+    box-shadow: 0px 0px 0px 2px #fff, 0px 0px 0px 4px var(--main_border_color);
+    border-radius: 50%;
+}
+.header .theme_switch i{
+    color: var(--main_border_color);
+}
+
+.header .right_side{
+    margin-left: auto; margin-right: 0;
+}
+.header .right_side a{}
+
+/* Header End ============================================ */
+
+/* Footer ============================================ */
+.footer{
+
+}
+/* Footer End ============================================ */
 
 @tailwind components;
 @tailwind utilities;
