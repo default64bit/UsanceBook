@@ -1,0 +1,10 @@
+@tailwind base;
+
+:root{
+    
+}
+
+/*  */
+
+@tailwind components;
+@tailwind utilities;
