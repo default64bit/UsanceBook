@@ -12,9 +12,9 @@
     <link rel="stylesheet" href="{{asset('fontawsome/releases/v0.0.0/css/pro.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
 </head>
-<body {{App::isLocale('fa')?'dir=rtl':''}}>
+<body>
     <div id="app">
-        <App></App>
+        <App {{App::isLocale('fa')?'dir=auto':'dir=auto'}}></App>
     </div>
     <script src="{{asset('js/app.js')}}"></script>
 </body>

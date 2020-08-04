@@ -1,6 +1,6 @@
 <template>
     <div class="login">
-        <h1 class="title">Login</h1>
+        <h1 class="title">Register</h1>
 
         <button class="btn">
             <img src="/assets/google.svg" alt="">
@@ -13,14 +13,14 @@
             <input type="email" placeholder="Email Address">
             <input type="password" placeholder="Password">
             <br>
-            <button class="btn">Login</button>
+            <button class="btn">Register</button>
         </form>
     </div>
 </template>
 
 <script>
     export default {
-        name: 'Login',
+        name: 'Register',
         data(){
             return {
 

@@ -4,6 +4,11 @@ import VueRouter from 'vue-router';
 // =================================
 
 import Login from './components/login/Login';
+import Register from './components/register/Register';
+
+// =================================
+
+import Dashboard from './components/dashboard/Dashboard';
 
 // =================================
 
@@ -15,14 +20,14 @@ export default new VueRouter({
     mode: 'history',
     routes: [
 
-        { path: '/', component: Login, name: 'Login' },
+        { path: '/', component: Dashboard, name: 'dashboard' },
 
         // =================================
 
-        // { path: '/user/login', component: Login, name: 'login', props: true },
+        { path: '/login', component: Login, name: 'login' },
         // { path: '/user/login/callback', component: LoginCallback },
 
-        // { path: '/user/register', component: Register, name: 'register', props: true },
+        { path: '/register', component: Register, name: 'register' },
         // { path: '/user/register/callback', component: RegisterCallback },
 
         // =================================
