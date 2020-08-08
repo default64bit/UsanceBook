@@ -29,7 +29,7 @@
             await token.isTokenValid().then(()=>{
                 this.logged_in = true;
             }).catch((err)=>{
-                login.goToLoginPage();
+                this.$router.push('/login');
             });
             this.loading = false;
         },
@@ -45,10 +45,14 @@
                     },
                 }).then(response=>{
                     this.$cookies.remove("access_token");
-                    this.$cookies.remove("refresh_token");
-                    login.goToLoginPage('0');
-                    // window.location.reload();
-                }).catch(error=>{});
+                    // this.$router.push('/login');
+                    window.location.reload();
+                }).catch(error=>{
+                    if(error.response != undefined && error.response.status != 500){
+                        // this.$router.push('/login');
+                        window.location.reload();
+                    }
+                });
             },
         },
     }

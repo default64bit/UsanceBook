@@ -2,6 +2,9 @@
 
 return [
 
+    'LOCAL_API_CLIENT_ID' => env('LOCAL_API_CLIENT_ID'),
+    'LOCAL_API_SECRET' => env('LOCAL_API_SECRET'),
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults

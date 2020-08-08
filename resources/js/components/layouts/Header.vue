@@ -21,7 +21,8 @@
         <div class="right_side">
             <div v-if="!logged_in">
                 <router-link to="/register" v-if="$route.name=='login'">Register</router-link>
-                <a href="javascript:;" @click="login()" v-else>Login</a>
+                <router-link to="/login" v-if="$route.name=='register'">Login</router-link>
+                <!-- <a href="javascript:;" @click="login()" v-else>Login</a> -->
             </div>
             <div class="user" v-else>
                 <span>{{name}} {{family}}</span>
@@ -59,9 +60,9 @@
             this.setDate();
         },
         methods: {
-            login(){
-                login.goToLoginPage();
-            },
+            // login(){
+            //     login.goToLoginPage();
+            // },
 
             getUser(){
                 let access_token = this.$cookies.get('access_token');
