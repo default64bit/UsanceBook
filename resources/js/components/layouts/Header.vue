@@ -19,13 +19,21 @@
             <i class="fas" :class="{'fa-moon dark':theme=='light', 'fa-sun-haze light':theme=='dark'}"></i>
         </span>
         <div class="right_side">
-            <router-link to="/register" v-if="$route.name=='login'">Register</router-link>
-            <router-link to="/login" v-else>Login</router-link>
+            <div v-if="!logged_in">
+                <router-link to="/register" v-if="$route.name=='login'">Register</router-link>
+                <a href="javascript:;" @click="login()" v-else>Login</a>
+            </div>
+            <div class="user" v-else>
+                <span>{{name}} {{family}}</span>
+                <img :src="avatar" alt="">
+            </div>
         </div>
     </header>
 </template>
 
 <script>
+    import login from '../../auth/login'
+    
     export default {
         name: "Header",
         data(){
@@ -36,15 +44,42 @@
                 day_number: '',
                 month: '',
                 year: '',
+
+                avatar: '',
+                name: '',
+                family: '',
+
+                logged_in: false,
             }
         },
         created(){
-
+            this.getUser();
         },
         mounted(){
             this.setDate();
         },
         methods: {
+            login(){
+                login.goToLoginPage();
+            },
+
+            getUser(){
+                let access_token = this.$cookies.get('access_token');
+                axios({
+                    url: '/api/v1/user',
+                    method: 'get',
+                    headers: {
+                        'Authorization': `Bearer ${access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                }).then(response=>{
+                    this.logged_in = true;
+                    this.avatar = response.data.avatar;
+                    this.name = response.data.name;
+                    this.family = response.data.family;
+                }).catch(error=>{});
+            },
+
             toggleTheme(){
                 this.theme = this.theme=='dark' ? 'light' : 'dark';
             },

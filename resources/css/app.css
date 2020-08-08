@@ -110,6 +110,17 @@ input:invalid{ border: 2px solid red; }
 }
 .header .right_side a{}
 
+.header .right_side .user{
+    display: flex; justify-content: center; align-items: center;
+}
+.header .right_side .user img{
+    width: 2.5rem; height: 2.5rem; border-radius: 50%; object-fit: cover;
+    margin-left: .5rem;
+}
+.header .right_side .user span{
+    display: inline-block;
+}
+
 /* Header End ============================================ */
 
 /* Footer ============================================ */

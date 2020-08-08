@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf_token" content="{{csrf_token()}}">
     <meta name="base_url" content="{{url('/')}}">
-    <title>📰 UsanceBook</title>
+    <title>Login - UsanceBook 📰</title>
     <!-- <link rel="shortcut icon" href="{{asset('img/logo.png')}}"/> -->
     <meta name="theme-color" content="#000">
 

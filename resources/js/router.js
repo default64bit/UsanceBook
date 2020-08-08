@@ -4,6 +4,8 @@ import VueRouter from 'vue-router';
 // =================================
 
 import Login from './components/login/Login';
+import LoginCallback from './components/login/LoginCallback';
+
 import Register from './components/register/Register';
 
 // =================================
@@ -25,7 +27,7 @@ export default new VueRouter({
         // =================================
 
         { path: '/login', component: Login, name: 'login' },
-        // { path: '/user/login/callback', component: LoginCallback },
+        { path: '/login/callback', component: LoginCallback },
 
         { path: '/register', component: Register, name: 'register' },
         // { path: '/user/register/callback', component: RegisterCallback },
