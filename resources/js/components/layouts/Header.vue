@@ -19,21 +19,22 @@
             <i class="fas" :class="{'fa-moon dark':theme=='light', 'fa-sun-haze light':theme=='dark'}"></i>
         </span>
         <div class="right_side">
-            <div v-if="!logged_in">
+            <div v-if="!isLoggedIn">
                 <router-link to="/register" v-if="$route.name=='login'">Register</router-link>
                 <router-link to="/login" v-if="$route.name=='register'">Login</router-link>
                 <!-- <a href="javascript:;" @click="login()" v-else>Login</a> -->
             </div>
             <div class="user" v-else>
-                <span>{{name}} {{family}}</span>
-                <img :src="avatar" alt="">
+                <span>{{userData.name}} {{userData.family}}</span>
+                <img :src="userData.avatar" alt="">
             </div>
         </div>
     </header>
 </template>
 
 <script>
-    import login from '../../auth/login'
+    import token from '../../auth/token'
+    import {mapGetters,mapActions} from 'vuex'
     
     export default {
         name: "Header",
@@ -45,41 +46,40 @@
                 day_number: '',
                 month: '',
                 year: '',
-
-                avatar: '',
-                name: '',
-                family: '',
-
-                logged_in: false,
             }
         },
-        created(){
-            this.getUser();
+        async created(){
+            let access_token = null;
+            await token.getToken().then((value)=>{ access_token = value; });
+            if(access_token != null){
+                await this.getUser(access_token);
+            }
         },
         mounted(){
             this.setDate();
         },
+        computed: {
+            ...mapGetters(['userData','isLoggedIn']),
+        },
         methods: {
-            // login(){
-            //     login.goToLoginPage();
-            // },
+            ...mapActions(['getUser']),
 
-            getUser(){
-                let access_token = this.$cookies.get('access_token');
-                axios({
-                    url: '/api/v1/user',
-                    method: 'get',
-                    headers: {
-                        'Authorization': `Bearer ${access_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                }).then(response=>{
-                    this.logged_in = true;
-                    this.avatar = response.data.avatar;
-                    this.name = response.data.name;
-                    this.family = response.data.family;
-                }).catch(error=>{});
-            },
+            // getUser(){
+            //     let access_token = this.$cookies.get('access_token');
+            //     axios({
+            //         url: '/api/v1/user',
+            //         method: 'get',
+            //         headers: {
+            //             'Authorization': `Bearer ${access_token}`,
+            //             'Content-Type': 'application/json'
+            //         },
+            //     }).then(response=>{
+            //         this.logged_in = true;
+            //         this.avatar = response.data.avatar;
+            //         this.name = response.data.name;
+            //         this.family = response.data.family;
+            //     }).catch(error=>{});
+            // },
 
             toggleTheme(){
                 this.theme = this.theme=='dark' ? 'light' : 'dark';

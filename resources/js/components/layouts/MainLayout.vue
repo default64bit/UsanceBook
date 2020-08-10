@@ -4,7 +4,7 @@
         <main-header v-if="showHeader"></main-header>
         <top-menu v-if="logged_in"></top-menu>
         <div class="main_content">
-            <slot name="content"></slot>
+            <slot class="flex flex-col justify-center items-center h-full" name="content"></slot>
         </div>
         <main-footer v-if="showFooter"></main-footer>
 

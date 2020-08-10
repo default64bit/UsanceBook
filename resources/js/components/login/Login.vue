@@ -1,31 +1,40 @@
 <template>
-    <div class="login">
-        <h1 class="title">Login</h1>
+    <div class="flex flex-col justify-center items-center h-full">
+        <div class="login" v-if="!loading">
+            <h1 class="title">Login</h1>
 
-        <button class="btn">
-            <img src="/assets/google.svg" alt="">
-            <span>Continue With Google</span>
-        </button>
+            <button class="btn">
+                <img src="/assets/google.svg" alt="">
+                <span>Continue With Google</span>
+            </button>
 
-        <div class="spacer">OR</div>
+            <div class="spacer">OR</div>
 
-        <form @submit.prevent>
-            <input type="hidden" name="_token" :value="csrf_token">
-            <input type="email" name="email" placeholder="Email Address" v-model="email">
-            <input type="password" name="password" placeholder="Password" v-model="password">
-            <br>
-            <b class="error text-lg text-red-500" v-if="error!=''">{{error}}</b>
-            <br>
-            <button class="btn" @click="submit()">Login</button>
-        </form>
+            <form @submit.prevent>
+                <input type="hidden" name="_token" :value="csrf_token">
+                <input type="email" name="email" placeholder="Email Address" v-model="email">
+                <input type="password" name="password" placeholder="Password" v-model="password">
+                <br>
+                <b class="error text-lg text-red-500" v-if="error!=''">{{error}}</b>
+                <br>
+                <button class="btn" @click="submit()">Login</button>
+            </form>
+        </div>
+
+        <loading v-else></loading>
     </div>
 </template>
 
 <script>
     import token from '../../auth/token'
+    import {mapGetters,mapActions} from 'vuex'
+    import Loading from '../layouts/Loading'
 
     export default {
         name: 'Login',
+        components: {
+            'loading': Loading,
+        },
         data(){
             return {
                 email: '',
@@ -33,29 +42,36 @@
 
                 base_url: document.querySelector('meta[name="base_url"]').getAttribute('content'),
                 csrf_token: document.querySelector('meta[name="csrf_token"]').getAttribute('content'),
+                access_token: null,
 
                 error: '',
+                loading: true,
             }
         },
         async created(){
-            await token.isTokenValid().then(()=>{
-                window.location.href = this.base_url;
-            }).catch((err)=>{ console.log(err); });
-
-            // const urlParams = new URLSearchParams(window.location.search);
-            // this.error = urlParams.get('error');
-            // switch(this.error){
-            //     case '1': this.error = 'Invalid Credentials'; break;
-            //     case '2': this.error = 'Something Went Wrong, Try Again'; break;
-            //     default: this.error = '';
-            // }
+            await token.getToken().then((value)=>{ this.access_token = value; });
+            if(this.access_token != null){
+                this.$router.push('/');
+            }
+            this.loading = false;
         },
         mounted(){
 
         },
+        computed: {
+            ...mapGetters(['userData','isLoggedIn']),
+        },
+        watch: {
+            isLoggedIn(newValue,oldValue){
+                if(newValue){
+                    this.$router.push('/');
+                }else{ this.loading = false; }
+            },
+        },
         methods: {
+            ...mapActions(['getUser']),
+
             submit(){
-                let access_token = this.$cookies.get('access_token');
                 axios({
                     url: '/login',
                     method: 'post',
@@ -65,7 +81,7 @@
                     }
                 }).then(response=>{
                     this.$cookies.set("access_token", response.data.access_token, 20*60, '/');
-                    this.$router.push('/');
+                    window.location.reload();
                 }).catch(error=>{
                     if(error.response != undefined && error.response.status != 500){
                         this.error = error.response.data.error;

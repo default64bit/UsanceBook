@@ -27,9 +27,6 @@ class UserController extends Controller
         // $token->delete();
 
         $cookie = Cookie::forget('refresh_token');
-        Cookie::queue($cookie);
-        cookie()->queue(cookie()->forget('refresh_token'));
-        setcookie('refresh_token','',time()-(5*24*60*60));
 
         $this->clear_oauth_tables($user);
         

@@ -77,15 +77,15 @@ async function isTokenValid(){
 
 async function getToken(){
     let access_token = getCookie('access_token');
-    if(access_token != '' || access_token != undefined || access_token != null){
+    if(access_token != '' && access_token != undefined && access_token != null){
         return access_token;
     }else{
         await updateToken().then(()=>{
             access_token = getCookie('access_token');
-            return access_token;
         }).catch(()=>{
-            return null;
+            access_token = null;
         });
+        return access_token;
     }
 }
 
