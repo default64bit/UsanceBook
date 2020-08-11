@@ -59,6 +59,7 @@
                     },
                 }).then(response=>{
                     this.$cookies.remove("access_token");
+                    this.getUser(this.access_token);
                     this.$router.push('/login');
                 }).catch(error=>{
                     if(error.response != undefined && error.response.status != 500){

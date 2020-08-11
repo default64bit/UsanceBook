@@ -2,7 +2,7 @@
     <div class="main_body">
 
         <main-header v-if="showHeader"></main-header>
-        <top-menu v-if="logged_in"></top-menu>
+        <top-menu v-if="isLoggedIn"></top-menu>
         <div class="main_content">
             <slot class="flex flex-col justify-center items-center h-full" name="content"></slot>
         </div>
@@ -12,6 +12,7 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex'
     import Header from './Header'
     import Footer from './Footer'
     import TopMenu from './TopMenu'
@@ -28,12 +29,17 @@
             return{
                 showHeader: true,
                 showFooter: true,
-                logged_in: false,
             }
         },
         mounted(){
             this.showHeader = this.header==false ? false : true;
             this.showFooter = this.footer==false ? false : true;
+        },
+        computed: {
+            ...mapGetters(['isLoggedIn']),
+        },
+        methods: {
+            
         },
     }
 </script>

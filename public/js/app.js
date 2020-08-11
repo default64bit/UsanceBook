@@ -2080,6 +2080,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }).then(function (response) {
                   _this2.$cookies.remove("access_token");
 
+                  _this2.getUser(_this2.access_token);
+
                   _this2.$router.push('/login');
                 })["catch"](function (error) {
                   if (error.response != undefined && error.response.status != 500) {
@@ -2298,9 +2300,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Header */ "./resources/js/components/layouts/Header.vue");
-/* harmony import */ var _Footer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Footer */ "./resources/js/components/layouts/Footer.vue");
-/* harmony import */ var _TopMenu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TopMenu */ "./resources/js/components/layouts/TopMenu.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _Header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Header */ "./resources/js/components/layouts/Header.vue");
+/* harmony import */ var _Footer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Footer */ "./resources/js/components/layouts/Footer.vue");
+/* harmony import */ var _TopMenu__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./TopMenu */ "./resources/js/components/layouts/TopMenu.vue");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -2314,6 +2323,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 
@@ -2321,21 +2331,22 @@ __webpack_require__.r(__webpack_exports__);
   name: "MainLayout",
   props: ['header', 'footer'],
   components: {
-    'main-header': _Header__WEBPACK_IMPORTED_MODULE_0__["default"],
-    'main-footer': _Footer__WEBPACK_IMPORTED_MODULE_1__["default"],
-    'top-menu': _TopMenu__WEBPACK_IMPORTED_MODULE_2__["default"]
+    'main-header': _Header__WEBPACK_IMPORTED_MODULE_1__["default"],
+    'main-footer': _Footer__WEBPACK_IMPORTED_MODULE_2__["default"],
+    'top-menu': _TopMenu__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   data: function data() {
     return {
       showHeader: true,
-      showFooter: true,
-      logged_in: false
+      showFooter: true
     };
   },
   mounted: function mounted() {
     this.showHeader = this.header == false ? false : true;
     this.showFooter = this.footer == false ? false : true;
-  }
+  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(['isLoggedIn'])),
+  methods: {}
 });
 
 /***/ }),
@@ -21424,7 +21435,7 @@ var render = function() {
     [
       _vm.showHeader ? _c("main-header") : _vm._e(),
       _vm._v(" "),
-      _vm.logged_in ? _c("top-menu") : _vm._e(),
+      _vm.isLoggedIn ? _c("top-menu") : _vm._e(),
       _vm._v(" "),
       _c("div", { staticClass: "main_content" }, [_vm._t("content")], 2),
       _vm._v(" "),
@@ -21455,10 +21466,11 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("nav", { ref: "menu", staticClass: "menu" }, [
-    _c("ul", { staticClass: "main_menu" }, [
+  return _c("nav", { staticClass: "top_menu" }, [
+    _c("ul", [
       _c(
         "li",
+        { attrs: { selected: _vm.$route.name == "dashboard" } },
         [
           _c("router-link", { attrs: { to: "/" } }, [
             _c("span", [_vm._v("Dashboard")])
@@ -21469,8 +21481,9 @@ var render = function() {
       _vm._v(" "),
       _c(
         "li",
+        { attrs: { selected: _vm.$route.name == "transactions" } },
         [
-          _c("router-link", { attrs: { to: "/" } }, [
+          _c("router-link", { attrs: { to: "/Transactions" } }, [
             _c("span", [_vm._v("Transactions")])
           ])
         ],
@@ -21479,8 +21492,9 @@ var render = function() {
       _vm._v(" "),
       _c(
         "li",
+        { attrs: { selected: _vm.$route.name == "cards" } },
         [
-          _c("router-link", { attrs: { to: "/" } }, [
+          _c("router-link", { attrs: { to: "/Cards" } }, [
             _c("span", [_vm._v("Cards")])
           ])
         ],
@@ -21489,8 +21503,9 @@ var render = function() {
       _vm._v(" "),
       _c(
         "li",
+        { attrs: { selected: _vm.$route.name == "groups" } },
         [
-          _c("router-link", { attrs: { to: "/" } }, [
+          _c("router-link", { attrs: { to: "/Groups" } }, [
             _c("span", [_vm._v("Groups")])
           ])
         ],
@@ -21499,27 +21514,27 @@ var render = function() {
       _vm._v(" "),
       _c(
         "li",
+        { attrs: { selected: _vm.$route.name == "friends" } },
         [
-          _c("router-link", { attrs: { to: "/" } }, [
+          _c("router-link", { attrs: { to: "/Friends" } }, [
             _c("span", [_vm._v("Friends")])
           ])
         ],
         1
       ),
       _vm._v(" "),
-      _c(
-        "li",
-        [
-          _c("router-link", { attrs: { to: "/" } }, [
-            _c("i", { staticClass: "fas fa-bell" })
-          ])
-        ],
-        1
-      )
+      _vm._m(0)
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("li", [_c("button", [_c("i", { staticClass: "fas fa-bell" })])])
+  }
+]
 render._withStripped = true
 
 

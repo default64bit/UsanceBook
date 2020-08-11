@@ -13,9 +13,6 @@ class RefreshTokenController extends Controller
     public function __invoke(Request $request){
         $refresh_token = $request->cookie('refresh_token');
         abort_unless($refresh_token, 403, 'Your refresh token is expired.');
-        // if(isset($_COOKIE['refresh_token']) && !empty($_COOKIE['refresh_token'])){
-        //     $refresh_token = $_COOKIE['refresh_token'];
-        // }else{ abort(403); }
 
         $request->request->add([
             'grant_type' => 'refresh_token',
