@@ -3,16 +3,15 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\UserRepository\UserRepository;
+use App\Repositories\UserRepository\UserRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
     private $user;
 
-    public function __construct(UserRepository $userRepository){
+    public function __construct(UserRepositoryInterface $userRepository){
         $this->user = $userRepository;
     }
 
