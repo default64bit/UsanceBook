@@ -30,13 +30,9 @@ class UserController extends Controller
         $tokenRepository->revokeAccessToken($token);
         $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($token);
 
-        // $token->revoke();
-        // $token->delete();
-
-        $cookie = Cookie::forget('refresh_token');
-
         $this->clear_oauth_tables($user);
         
+        $cookie = Cookie::forget('refresh_token');
         return response('',200)->withCookie($cookie);
     }
 }
