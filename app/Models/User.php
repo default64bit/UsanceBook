@@ -40,7 +40,7 @@ class User extends Authenticatable
     ];
 
     public function getAvatarAttribute($avatar){
-        return $avatar ? url('/img/users/'.$avatar) : '';
+        return $avatar ? url('/img/users/'.$avatar) : url('/assets/user.svg');
     }
 
     public function getFriendsAttribute(){

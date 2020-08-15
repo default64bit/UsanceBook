@@ -4,6 +4,7 @@ namespace App\Repositories\UserRepository;
 
 use App\Models\User;
 use App\Repositories\BaseRepository;
+use Illuminate\Support\Str;
 
 class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
@@ -15,6 +16,13 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
 
     public function create(array $data){
+        if(!empty($data['avatar'])){
+            $file_name = Str::uuid().'.'.$data['avatar']->getClientOriginalExtension();
+            $data['avatar']->move('img/users', $file_name);
+            $data['avatar'] = $file_name;
+        }
+        $data['password'] = bcrypt($data['password']);
+
         return $this->user->create([
             'avatar' => $data['avatar'],
             'name' => $data['name'],
