@@ -13,6 +13,10 @@ import Dashboard from './components/dashboard/Dashboard';
 
 // =================================
 
+import Transactions from './components/transactions/Transactions';
+
+// =================================
+
 import Http404 from './components/Http404';
 
 Vue.use(VueRouter);
@@ -27,6 +31,10 @@ export default new VueRouter({
 
         { path: '/login', component: Login, name: 'login' },
         { path: '/register', component: Register, name: 'register' },
+
+        // =================================
+
+        { path: '/transactions', component: Transactions, name: 'transactions' },
 
         // =================================
 
