@@ -64,23 +64,6 @@
         methods: {
             ...mapActions(['getUser']),
 
-            // getUser(){
-            //     let access_token = this.$cookies.get('access_token');
-            //     axios({
-            //         url: '/api/v1/user',
-            //         method: 'get',
-            //         headers: {
-            //             'Authorization': `Bearer ${access_token}`,
-            //             'Content-Type': 'application/json'
-            //         },
-            //     }).then(response=>{
-            //         this.logged_in = true;
-            //         this.avatar = response.data.avatar;
-            //         this.name = response.data.name;
-            //         this.family = response.data.family;
-            //     }).catch(error=>{});
-            // },
-
             toggleTheme(){
                 this.theme = this.theme=='dark' ? 'light' : 'dark';
             },

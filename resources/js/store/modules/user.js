@@ -48,7 +48,6 @@ const actions = {
             commit('setIsLoggedIn',true);
         }).catch(error=>{
             commit('reset');
-            console.log(error);
         });
     },
 };

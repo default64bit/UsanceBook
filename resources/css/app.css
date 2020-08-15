@@ -9,7 +9,14 @@
     --defult_button_color: #f5f5f5;
     --secondary_button_color: #3d3d3d;
 
+    --dark_blue: #0091a5;
     --light_blue: #ccf9ff;
+
+    --dark_red: #da6555;
+    --light_red: #ffc4bc;
+
+    --dark_green: #a0d66e;
+    --light_green: #e5ffcc;
 }
 
 @font-face{ font-family: "Vazir"; src: url('../fonts/Vazir.ttf') format('truetype'); }
@@ -29,24 +36,30 @@ a{
 }
 
 #app{
-    height: 100%;
+    /* min-height: 100%; */
 }
 .main_body{
     display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
-    height: 100%; padding: 0 2rem; scroll-behavior: smooth;
+    padding: 0 2rem; scroll-behavior: smooth;
     background-color: var(--main_background_color);
 }
 .main_body .main_content{
-    position: relative; width: 100%; height: 100%;
+    /* position: relative; */
+    width: 100%;
 }
 .main_body .main_content > div{
-    display: flex; flex-direction: column; height: 100%;
+    display: flex; flex-direction: column;
 }
 
 .btn{
     cursor: pointer; transition: all .3s; box-shadow: 0px 0px 0px white;
 }
 .btn:hover,.btn:focus{ box-shadow: var(--main_box_shadow); }
+
+.box{
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    border: 1px solid var(--main_border_color); padding: 1rem;
+}
 
 input{
     border: 2px solid var(--main_text_color);
@@ -167,12 +180,12 @@ input:invalid{ border: 2px solid red; }
 
 /* TopMenu End ============================================ */
 .top_menu{
-    width: 100%; min-height: 70px;
+    width: 100%; min-height: 70px; margin-bottom: 1rem;
     display: flex; justify-content: center; align-items: center;
     border-bottom: 2px solid var(--main_border_color);
 }
 .top_menu ul{
-    width: 100%;
+    width: 100%; margin: 1rem 0;
     display: flex; justify-content: space-evenly; align-items: center;
 }
 .top_menu ul li{}
@@ -181,11 +194,246 @@ input:invalid{ border: 2px solid red; }
 }
 .top_menu ul li[selected] a{ border: 2px solid var(--main_border_color); border-left: 0; border-right: 0; }
 .top_menu ul li span{
-    display: inline-block; margin: 2px 0; padding: .25rem 1rem;
+    display: inline-block; margin: 2px 0; padding: .25rem 1rem; font-size: 1.25rem;
 }
 .top_menu ul li[selected] span{ background-color: var(--light_blue); }
-.top_menu ul li i{ color: var(--light_blue); -webkit-text-stroke: 1px var(--main_text_color); }
+
+.top_menu ul li button{ margin: 0 .5rem; }
+.top_menu ul li i{ font-size: 1.25rem; color: var(--light_blue); -webkit-text-stroke: 1px var(--main_text_color); }
+.top_menu ul li button[title="Logout"] i{ color: var(--light_red); }
 /* TopMenu End ============================================ */
+
+/* Forms Input ============================================ */
+.search{
+    display: flex; justify-content: center; align-items: center;
+    background-color: var(--defult_button_color);
+    width: 2.5rem; transition: all .3s;
+}
+.search input{
+    margin: 0; height: 2.5rem; transform-origin: left;
+    width: 0; padding: 0; position: absolute;
+    transform: scaleX(0); transition: all .3s;
+}
+.search.open{ width: auto; }
+.search.open input{
+    position: relative; width: auto; padding: .5rem;
+    transform: scaleX(1);
+}
+.search i{
+    display: flex; justify-content: center; align-items: center;
+    width: 2.5rem; height: 2.5rem; padding: 1rem; cursor: pointer;
+}
+
+.dialog{
+    position: fixed; z-index: 100;
+    top: 0; bottom: 0; right: 0; left: 0;
+    display: flex; justify-content: center; align-items: center;
+}
+.dialog .dialog_box{
+    position: relative; background-color: var(--main_background_color);
+    width: 100%; max-width: 1024px; min-height: 50vh; z-index: 2; padding: 0 1rem;
+    display: flex; flex-direction: column;
+}
+.dialog .dialog_box .header{
+    width: 100%; height: auto; padding: 1rem 0;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 2px solid var(--main_border_color);
+}
+.dialog .dialog_box .header h3{
+    font-size: 1.25rem; font-weight: bold;
+    border: 2px solid var(--main_border_color); border-left: 0; border-right: 0;
+}
+.dialog .dialog_box .header button{
+    width: 2rem; height: 2rem;
+    display: flex; justify-content: center; align-items: center;
+    background-color: var(--light_red);
+}
+.dialog .dialog_box .header button i{}
+.dialog .dialog_box > div[slot="form"]{
+    padding: 1rem 0;
+}
+.dialog .overlay{
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+    background-color: rgba(0,0,0,.3);
+}
+/* Forms Input End ============================================ */
+
+/* Dashboard ============================================ */
+.dashboard{
+    width: 100%;
+    display: grid; grid-gap: 1rem;
+    grid-template-areas:
+        'chart chart chart chart chart chart'
+        'card card card card card right'
+        'transaction transaction transaction group group right';
+}
+.dashboard div[name="ad"]{
+    display: flex; justify-content: center; align-items: center; font-size: 3rem;
+    margin: 1rem 0;
+    background-color: var(--light_blue); color: var(--dark_blue);
+}
+.dashboard div[name="subscription"]{}
+.dashboard div[name="subscription"] h3{
+    font-size: 1.5rem;
+}
+.dashboard div[name="subscription"] input{}
+.dashboard div[name="subscription"] button{
+    background-color: var(--secondary_button_color); color: var(--main_background_color);
+    width: 100%; padding: .5rem;
+}
+/* Dashboard End ============================================ */
+
+/* DashboardChart ============================================ */
+.dashboard_chart{
+    width: 100%; min-height: 600px;
+    grid-area: chart;
+}
+/* DashboardChart End ============================================ */
+
+/* DashboardCards ============================================ */
+.dashboard_cards{
+    width: 100%; min-height: 300px;
+    grid-area: card;
+}
+/* DashboardCards End ============================================ */
+
+/* DashboardFriends ============================================ */
+.dashboard_friends{
+    width: 100%; height: calc(100% - 240px);
+    grid-area: friend;
+}
+/* DashboardFriends End ============================================ */
+
+/* DashboardTransactions ============================================ */
+.dashboard_transactions{
+    width: 100%; min-height: 400px;
+    grid-area: transaction;
+}
+/* DashboardTransactions End ============================================ */
+
+/* DashboardGroups ============================================ */
+.dashboard_groups{
+    width: 100%; min-height: 400px;
+    grid-area: group;
+}
+/* DashboardGroups End ============================================ */
+
+/* Transactions ============================================ */
+.transactions{
+    width: 100%; display: flex; justify-content: flex-start; align-items: flex-start;
+}
+
+.transactions .transaction_table{
+    width: 100%;
+}
+.transactions .transaction_table .toolbar{
+    width: 100%; display: flex; justify-content: flex-start; align-items: center; margin-bottom: 1rem;
+}
+.transactions .transaction_table .toolbar button{
+    margin-inline-start: auto; background-color: var(--light_green);
+    padding: .5rem 1rem; font-weight: bold;
+}
+
+.transactions .transaction_table table{
+    width: 100%;
+}
+.transactions .transaction_table table thead{
+    border: 2px solid var(--main_border_color); border-left: 0; border-right: 0;
+}
+.transactions .transaction_table table thead tr{}
+.transactions .transaction_table table thead tr th{
+    text-align: start; padding: .25rem 1rem;
+}
+.transactions .transaction_table table thead tr th span{}
+.transactions .transaction_table table thead tr th i{}
+.transactions .transaction_table table tbody{}
+.transactions .transaction_table table tbody tr{}
+.transactions .transaction_table table tbody tr:hover{ background-color: var(--defult_button_color); }
+.transactions .transaction_table table tbody tr td{
+    padding: 1rem;
+}
+.transactions .transaction_table table tbody tr td[type="+"] span{ color: var(--dark_blue); }
+.transactions .transaction_table table tbody tr td[type="-"] span{ color: var(--dark_red); }
+.transactions .transaction_table table tbody tr td .avatar{
+    border-radius: 50%; width: 2.5rem; height: 2.5rem; margin-inline-end: 1rem;
+}
+.transactions .transaction_table table tbody tr .actions{
+    position: relative;
+}
+.transactions .transaction_table table tbody tr .actions > i{
+    cursor: pointer; width: 1.5rem; height: 1.5rem;
+    display: flex; justify-content: center; align-items: center;
+}
+.transactions .transaction_table table tbody tr .actions > i:hover{ background-color: var(--main_border_color); }
+.transactions .transaction_table table tbody tr .actions ul{
+    display: none; flex-direction: column; justify-content: flex-start; align-items: flex-start;
+    border: 1px solid var(--main_border_color); z-index: 5;
+    padding: .5rem; margin: .5rem; right: 75%; top: 1.5rem;
+    position: absolute; background-color: var(--main_background_color);
+    box-shadow: var(--main_box_shadow);
+}
+.transactions .transaction_table table tbody tr .actions ul[open]{ display: flex; }
+.transactions .transaction_table table tbody tr .actions li{ width: 100%; }
+.transactions .transaction_table table tbody tr .actions li button{
+    display: flex; justify-content: flex-start; align-items: center;
+    padding: .5rem; width: 100%;
+}
+.transactions .transaction_table table tbody tr .actions li button:hover{
+    background-color: var(--defult_button_color);
+}
+
+.transactions .transaction_info{
+    margin-inline-end: 1rem; min-width: 230px;
+}
+.transactions .transaction_info .total{
+    border: 2px solid var(--main_border_color); border-left: 0; border-right: 0;
+    padding: 1rem 0;
+}
+.transactions .transaction_info .total h4{
+    font-weight: bold; font-size: 1rem;
+}
+.transactions .transaction_info .total > b{
+    width: 100%; display: flex; justify-content: center; align-items: center;
+    background-color: var(--main_text_color); color: var(--main_background_color);
+    font-size: 1.5rem; margin: 1rem 0;
+}
+.transactions .transaction_info .total span{ display: block; }
+.transactions .transaction_info .total span[type="+"] b{ color: var(--dark_blue); }
+.transactions .transaction_info .total span[type="-"] b{ color: var(--dark_red); }
+.transactions .transaction_info .top{
+    margin: 1rem 0; padding: .5rem; border: .5rem solid var(--main_background_color);
+    box-shadow: 0px 0px 0px 2px var(--main_border_color);
+    position: relative; overflow: hidden;
+}
+.transactions .transaction_info .top::before{
+    content: ''; position: absolute; width: 150%; height: 150%; top: -60%;
+}
+.transactions .transaction_info .top[type="+"]::before{
+    background-color: var(--light_blue); transform: rotate(45deg); left: -68%;
+}
+.transactions .transaction_info .top[type="-"]::before{
+    background-color: var(--light_red); transform: rotate(-45deg); left: 18%;
+}
+.transactions .transaction_info .top h4{
+    position: relative; font-weight: bold;
+}
+.transactions .transaction_info .top > span{
+    position: relative; font-size: .8rem; opacity: .8;
+}
+.transactions .transaction_info .top b{
+    position: relative; display: flex; justify-content: center; align-items: center;
+    font-size: 1.7rem; margin: 1.25rem 0;
+}
+.transactions .transaction_info .top[type="+"] b{ color: var(--dark_blue); }
+.transactions .transaction_info .top[type="-"] b{ color: var(--dark_red); }
+.transactions .transaction_info .top .avatar{
+    position: relative; display: flex; justify-content: center; align-items: center;
+}
+.transactions .transaction_info .top .avatar img{
+    width: 2rem; height: 2rem; border-radius: 50%; margin-inline-end: .5rem;
+}
+.transactions .transaction_info .top .avatar span{}
+/* Transactions End ============================================ */
 
 @media (min-width: 700px){
     .header .logo{ display: block; }

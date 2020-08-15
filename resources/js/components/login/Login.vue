@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col justify-center items-center h-full">
+    <div class="flex flex-col justify-center items-center" style="height:calc(100vh - 100px)">
         <div class="login" v-if="!loading">
             <h1 class="title">Login</h1>
 

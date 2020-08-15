@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware'=>['guest'], 'namespace'=>'Auth'], function(){
-    Route::post('Register','RegisterController');
+    Route::post('register','RegisterController');
     Route::post('login','LoginController');
     Route::post('refresh_token','RefreshTokenController');
 });
