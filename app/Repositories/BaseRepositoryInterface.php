@@ -15,4 +15,6 @@ interface BaseRepositoryInterface
     public function update($id);
 
     public function delete($id);
+
+    public function search($builder, array $fields = [], $value);
 }

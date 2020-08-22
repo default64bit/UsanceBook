@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Repositories\UserRepository\UserRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
@@ -18,7 +19,7 @@ class UserController extends Controller
     public function get_user(Request $request){
         $user = $request->user();
         $user_info = $this->user->userInfo($user->id);
-        return response()->json($user_info);
+        return new UserResource($user_info);
     }
 
     public function logout(Request $request){

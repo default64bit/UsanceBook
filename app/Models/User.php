@@ -68,17 +68,6 @@ class User extends Authenticatable
     }
     /*end relation*/
 
-    public function format(){
-        return [
-            'id' => $this->id,
-            'avatar' => $this->avatar,
-            'name' => $this->name,
-            'family' => $this->family,
-            'email' => $this->email,
-            'register' => $this->created_at->diffForHumans(),
-        ];
-    }
-
     public function findForPassport($username){
         return $this->where('email',$username)->first();
     }

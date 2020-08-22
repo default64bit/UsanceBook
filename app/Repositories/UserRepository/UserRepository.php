@@ -38,7 +38,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
 
     public function userInfo($id){
-        return $this->user->where('id',$id)->first()->format();
+        return $this->user->where('id',$id)->first();
     }
 
 }

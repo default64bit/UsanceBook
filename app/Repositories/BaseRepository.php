@@ -34,4 +34,15 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function delete($id){
         return $this->model->where('id',$id)->delete();
     }
+
+    public function search($builder, array $fields = [], $value){
+        if($value!='' && $value!=null){
+            $builder->where(function($query) use ($fields,$value){
+                foreach($fields as $column){
+                    $query->orWhere($column,'like',"%$value%");
+                }
+            });
+        }
+        return $builder;
+    }
 }

@@ -15,6 +15,12 @@ class Transaction extends Model
         'title', 'amount', 'type', 'date', 'user_id', 'for_user_id', 'card_id'
     ];
 
+    const SEARCHABLE = [
+        'title', 'amount', 'date'
+    ];
+    
+    const PER_PAGE = 30;
+
     /*relation*/
     public function user(){
         return $this->belongsTo(User::class,'user_id');
