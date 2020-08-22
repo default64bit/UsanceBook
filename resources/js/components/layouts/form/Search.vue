@@ -1,9 +1,9 @@
 <template>
-    <div class="search" :class="{'open':open}"
+    <form @submit.prevent="click()" class="search" :class="{'open':open}"
         @mouseenter="can_close=false" @mouseleave="can_close=true">
         <input ref="search" type="text" :placeholder="placeholder" @input="updateValue($event.target.value)">
         <i class="far fa-search" @click="click()"></i>
-    </div>
+    </form>
 </template>
 
 <script>

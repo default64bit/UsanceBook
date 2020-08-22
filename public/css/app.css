@@ -595,7 +595,8 @@ video {
   --main_text_color: #000;
   --main_border_color: #c4c4c4;
   --main_box_shadow: 0px 20px 20px -15px rgba(0,0,0,.2);
-  --defult_button_color: #f5f5f5;
+  --placeholder_color: #a3b1c2;
+  --default_button_color: #f5f5f5;
   --secondary_button_color: #3d3d3d;
   --dark_blue: #0091a5;
   --light_blue: #ccf9ff;
@@ -649,16 +650,16 @@ a{
   display: flex; flex-direction: column;
 }
 
+hr{
+  width: 100%; border: 0;
+  border-bottom: 2px solid var(--main_border_color);
+}
+
 .btn{
   cursor: pointer; transition: all .3s; box-shadow: 0px 0px 0px white;
 }
 
-.btn:hover,.btn:focus{ box-shadow: var(--main_box_shadow);
-}
-
-.box{
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
-  border: 1px solid var(--main_border_color); padding: 1rem;
+.btn:hover{ box-shadow: var(--main_box_shadow);
 }
 
 input{
@@ -772,7 +773,7 @@ input:invalid{ border: 2px solid red;
 .login{
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   padding: 1.5rem; margin: auto;
-  width: 100%; max-width: 400px; border: 2px solid var(--defult_button_color);
+  width: 100%; max-width: 400px; border: 2px solid var(--default_button_color);
 }
 
 .login h1{
@@ -783,7 +784,7 @@ input:invalid{ border: 2px solid red;
 .login button{
   width: 100%; padding: .5rem; font-weight: bold;
   display: flex; justify-content: center; align-items: center;
-  background-color: var(--defult_button_color);
+  background-color: var(--default_button_color);
 }
 
 .login button img{ width: 20px; margin: 0 .5rem;
@@ -856,9 +857,16 @@ input:invalid{ border: 2px solid red;
 
 /* Forms Input ============================================ */
 
+.loading{
+}
+
+.loading button{
+  padding: .5rem 2rem; background-color: var(--secondary_button_color); color: var(--main_background_color);
+}
+
 .search{
   display: flex; justify-content: center; align-items: center;
-  background-color: var(--defult_button_color);
+  background-color: var(--default_button_color);
   width: 2.5rem; transition: all .3s;
 }
 
@@ -887,9 +895,12 @@ input:invalid{ border: 2px solid red;
   display: flex; justify-content: center; align-items: center;
 }
 
+.dialog.hidden{ display: none;
+}
+
 .dialog .dialog_box{
   position: relative; background-color: var(--main_background_color);
-  width: 100%; max-width: 1024px; min-height: 50vh; z-index: 2; padding: 0 1rem;
+  width: 100%; max-width: 768px; min-height: 30vh; z-index: 2; padding: 0 1rem;
   display: flex; flex-direction: column;
 }
 
@@ -913,13 +924,77 @@ input:invalid{ border: 2px solid red;
 .dialog .dialog_box .header button i{
 }
 
-.dialog .dialog_box > div[slot="form"]{
-  padding: 1rem 0;
+.dialog .dialog_box > .form{
+  padding: 1rem;
 }
 
 .dialog .overlay{
   position: absolute; top: 0; right: 0; bottom: 0; left: 0;
   background-color: rgba(0,0,0,.3);
+}
+
+.dialog input{ margin: 1rem 0;
+}
+
+.input_box{
+  position: relative; width: 100%; margin: 1rem 0;
+}
+
+.input_box input{ margin: 0;
+}
+
+.input_box span[name="placeholder"]{
+  display: inline-block; position: absolute; color: var(--placeholder_color); transition: all .3s;
+  top: .55rem; left: .65rem;
+}
+
+.input_box span[name="placeholder"].up{
+  color: var(--main_text_color); background-color: var(--main_background_color);
+  top: -.9rem; left: .25rem; padding: 0 .25rem;
+}
+
+.select_box{
+  width: 100%;
+  position: relative; margin: 1rem 0;
+  display: flex; justify-content: space-between; align-items: center;
+  border: 2px solid var(--main_text_color);
+  padding: .5rem;
+}
+
+.select_box.z{ z-index: 5;
+}
+
+.select_box .box{
+  height: 1.5rem; min-width: 3rem;
+}
+
+.select_box > i{ -webkit-margin-start: 1rem; margin-inline-start: 1rem;
+}
+
+.select_box .box span[name="placeholder"]{
+  display: inline-block; position: absolute; color: var(--placeholder_color); transition: all .3s;
+}
+
+.select_box .box span[name="placeholder"].up{
+  color: var(--main_text_color); background-color: var(--main_background_color);
+  top: -.9rem; left: .25rem; padding: 0 .25rem;
+}
+
+.select_box .list{
+  position: absolute; top: 2.5rem; right: 0; left: 0; background-color: var(--main_background_color);
+  border: 2px solid var(--main_text_color);
+  width: 100%;
+}
+
+.select_box .list li{ padding: .5rem; cursor: pointer;
+}
+
+.select_box .list li:hover{ background-color: var(--default_button_color);
+}
+
+.input_group{
+  display: flex; justify-content: flex-start; align-items: center;
+  gap: 1rem;
 }
 
 /* Forms Input End ============================================ */
@@ -954,6 +1029,11 @@ input:invalid{ border: 2px solid red;
 .dashboard div[name="subscription"] button{
   background-color: var(--secondary_button_color); color: var(--main_background_color);
   width: 100%; padding: .5rem;
+}
+
+.dashboard .box{
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  border: 1px solid var(--main_border_color); padding: 1rem;
 }
 
 /* Dashboard End ============================================ */
@@ -1050,7 +1130,7 @@ input:invalid{ border: 2px solid red;
 .transactions .transaction_table table tbody tr{
 }
 
-.transactions .transaction_table table tbody tr:hover{ background-color: var(--defult_button_color);
+.transactions .transaction_table table tbody tr:hover{ background-color: var(--default_button_color);
 }
 
 .transactions .transaction_table table tbody tr td{
@@ -1099,7 +1179,7 @@ input:invalid{ border: 2px solid red;
 }
 
 .transactions .transaction_table table tbody tr .actions li button:hover{
-  background-color: var(--defult_button_color);
+  background-color: var(--default_button_color);
 }
 
 .transactions .transaction_info{
@@ -1177,6 +1257,14 @@ input:invalid{ border: 2px solid red;
 }
 
 .transactions .transaction_info .top .avatar span{
+}
+
+.transaction_create{
+}
+
+.transaction_create button{
+  font-weight: bold; margin: 1rem 0;
+  background-color: var(--light_green); padding: .5rem 1rem;
 }
 
 /* Transactions End ============================================ */
