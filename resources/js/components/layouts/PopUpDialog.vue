@@ -1,5 +1,5 @@
 <template>
-    <div class="dialog" v-if="open">
+    <div class="dialog" :class="{'hidden':!open}">
         <div class="dialog_box">
             <div class="header">
                 <h3>{{title}}</h3>

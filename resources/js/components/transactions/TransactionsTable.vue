@@ -1,7 +1,7 @@
 <template>
     <div class="transaction_table">
         <div class="toolbar">
-            <search v-model="search" placeholder="Search Transactions" @search="doSomething()"></search>
+            <search v-model="search" placeholder="Search Transactions" @search="searchInTransactions()"></search>
             <button class="btn" @click="addClicked()">Add New Transaction</button>
         </div>
         <table>
@@ -12,7 +12,7 @@
                         <i class="fad fa-long-arrow-alt-up"></i><i class="fad fa-long-arrow-alt-down"></i>
                     </th>
                     <th>
-                        <span>Payed By</span>
+                        <span>Transaction By</span>
                         <i class="fad fa-long-arrow-alt-up"></i><i class="fad fa-long-arrow-alt-down"></i>
                     </th>
                     <th>
@@ -56,10 +56,16 @@
                 </tr>
             </tbody>
         </table>
+        <hr class="my-4">
+        <div class="loading flex flex-col justify-center items-center" v-if="pagination.next">
+            <button class="btn bg-gray-700" @click="getTransactions(pagination.next,false)" v-if="!loading">Load More</button>
+            <span class="text-5xl fad fa-spinner fa-spin" v-else></span>
+        </div>
     </div>
 </template>
 
 <script>
+    import token from '../../auth/token'
     import Search from '../layouts/form/Search'
 
     export default {
@@ -69,105 +75,19 @@
         },
         data(){
             return {
-                transactions: [
-                    {
-                        'name': 'Transaction Name',
-                        'payed_by': {
-                            'avatar': '/assets/user.svg',
-                            'name': 'Kasra',
-                            'family': 'Keshvardoost',
-                        },
-                        'amount': '23,450',
-                        'unit': 'T',
-                        'type': '+',
-                        'card': 'From Wallet',
-                        'date': '13 Sep, 2019',
-                    },
-                    {
-                        'name': 'Transaction Name',
-                        'payed_by': {
-                            'avatar': '/assets/user.svg',
-                            'name': 'Kasra',
-                            'family': 'Keshvardoost',
-                        },
-                        'amount': '23,450',
-                        'unit': 'T',
-                        'type': '-',
-                        'card': 'From Wallet',
-                        'date': '13 Sep, 2019',
-                    },
-                    {
-                        'name': 'Transaction Name',
-                        'payed_by': {
-                            'avatar': '/assets/user.svg',
-                            'name': 'Kasra',
-                            'family': 'Keshvardoost',
-                        },
-                        'amount': '23,450',
-                        'unit': 'T',
-                        'type': '+',
-                        'card': 'From Wallet',
-                        'date': '13 Sep, 2019',
-                    },
-                    {
-                        'name': 'Transaction Name',
-                        'payed_by': {
-                            'avatar': '/assets/user.svg',
-                            'name': 'Kasra',
-                            'family': 'Keshvardoost',
-                        },
-                        'amount': '23,450',
-                        'unit': 'T',
-                        'type': '+',
-                        'card': 'From Wallet',
-                        'date': '13 Sep, 2019',
-                    },
-                    {
-                        'name': 'Transaction Name',
-                        'payed_by': {
-                            'avatar': '/assets/user.svg',
-                            'name': 'Kasra',
-                            'family': 'Keshvardoost',
-                        },
-                        'amount': '23,450',
-                        'unit': 'T',
-                        'type': '-',
-                        'card': 'From Wallet',
-                        'date': '13 Sep, 2019',
-                    },
-                    {
-                        'name': 'Transaction Name',
-                        'payed_by': {
-                            'avatar': '/assets/user.svg',
-                            'name': 'Kasra',
-                            'family': 'Keshvardoost',
-                        },
-                        'amount': '23,450',
-                        'unit': 'T',
-                        'type': '+',
-                        'card': 'From Wallet',
-                        'date': '13 Sep, 2019',
-                    },
-                    {
-                        'name': 'Transaction Name',
-                        'payed_by': {
-                            'avatar': '/assets/user.svg',
-                            'name': 'Kasra',
-                            'family': 'Keshvardoost',
-                        },
-                        'amount': '23,450',
-                        'unit': 'T',
-                        'type': '+',
-                        'card': 'From Wallet',
-                        'date': '13 Sep, 2019',
-                    },
-                ],
+                transactions: [],
+                pagination: {},
 
                 search: '',
+
+                loading: false,
+                access_token: '',
             }
         },
         created(){
-
+            this.$parent.$on('new_value',(value)=>{
+                this.transactions.unshift(value);
+            });
         },
         mounted(){
             document.getElementById('app').addEventListener('mousedown',()=>{
@@ -177,6 +97,8 @@
                     }
                 }
             });
+
+            this.getTransactions();
         },
         methods: {
             toggle_menu(index,state){
@@ -184,13 +106,50 @@
                 this.$set(this.transactions[index],'can_close',state);
             },
 
-            doSomething(){
-                console.log(this.search);
+            async getTransactions(url = '/api/v1/transaction', first_time = true){
+                if(!url){ return 0; }
+
+                await token.getToken().then((value)=>{ this.access_token = value; });
+
+                this.loading = true;
+                axios({
+                    url: url,
+                    method: 'get',
+                    headers: {
+                        'Authorization': `Bearer ${this.access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                }).then(response=>{
+                    if(first_time){
+                        this.transactions = response.data.data;
+                    }else{
+                        this.transactions.push(...response.data.data);
+                    }
+                    this.pagination = {
+                        current_page:response.data.meta.current_page,
+                        first:response.data.links.first,
+                        last:response.data.links.last,
+                        next:response.data.links.next,
+                        prev:response.data.links.prev,
+                    }
+                    this.loading = false;
+                }).catch(error=>{
+                    this.loading = false;
+                });
+            },
+
+            searchInTransactions(){
+                let url = '/api/v1/transaction';
+                if(this.search != null || this.search != undefined){
+                    url += `?search=${this.search}`;
+                }
+                this.getTransactions(url);
             },
 
             addClicked(){
                 this.$emit('add');
             },
+
         },
     }
 </script>

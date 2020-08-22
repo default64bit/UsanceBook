@@ -2,10 +2,10 @@
      <div class="flex flex-col justify-center items-center">
         <div class="transactions" v-if="!loading">
             <transactions-info></transactions-info>
-            <transactions-table @add="is_add_dialog_open=true"></transactions-table>
+            <transactions-table ref="transactions_table" @add="is_add_dialog_open=true"></transactions-table>
         </div>
         <loading v-else></loading>
-        <pop-up-dialog :open.sync="is_add_dialog_open" title="Add New Transaction">
+        <pop-up-dialog :open.sync="is_add_dialog_open" @close="is_add_dialog_open=false" @new_value="new_value" title="Add New Transaction">
             <create slot="form"></create>
         </pop-up-dialog>
     </div>
@@ -57,7 +57,9 @@
             },
         },
         methods: {
-            
+            new_value(value){
+                this.$emit('new_value',value);
+            },
         },
     }
 </script>
