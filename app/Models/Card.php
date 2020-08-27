@@ -15,6 +15,12 @@ class Card extends Model
         'bank', 'number', 'user_id'
     ];
 
+    const SEARCHABLE = [
+        'bank', 'number'
+    ];
+
+    const PER_PAGE = 30;
+
     /*relation*/
     public function user(){
         return $this->belongsTo(User::class,'user_id');

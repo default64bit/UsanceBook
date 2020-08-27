@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Repositories\BaseRepository;
 use App\Repositories\BaseRepositoryInterface;
+use App\Repositories\CardRepository\CardRepository;
+use App\Repositories\CardRepository\CardRepositoryInterface;
 use App\Repositories\TransactionRepository\TransactionRepository;
 use App\Repositories\TransactionRepository\TransactionRepositoryInterface;
 use App\Repositories\UserRepository\UserRepository;

@@ -17,7 +17,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function create(array $data){}
 
-    public function update($id){}
+    public function update(array $data,$id){}
 
     public function read($id){
         return $this->model->where('id',$id)->first();

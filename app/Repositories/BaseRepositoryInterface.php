@@ -12,7 +12,7 @@ interface BaseRepositoryInterface
 
     public function readAll();
 
-    public function update($id);
+    public function update(array $data,$id);
 
     public function delete($id);
 
