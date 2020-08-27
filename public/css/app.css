@@ -900,7 +900,7 @@ input:invalid{ border: 2px solid red;
 
 .dialog .dialog_box{
   position: relative; background-color: var(--main_background_color);
-  width: 100%; max-width: 768px; min-height: 30vh; z-index: 2; padding: 0 1rem;
+  width: 100%; width: auto; max-width: 480px; min-height: 10vh; z-index: 2; padding: 0 1rem;
   display: flex; flex-direction: column;
 }
 
@@ -918,7 +918,7 @@ input:invalid{ border: 2px solid red;
 .dialog .dialog_box .header button{
   width: 2rem; height: 2rem;
   display: flex; justify-content: center; align-items: center;
-  background-color: var(--light_red);
+  background-color: var(--main_background_color); border: 2px solid var(--dark_red);
 }
 
 .dialog .dialog_box .header button i{
@@ -965,7 +965,7 @@ input:invalid{ border: 2px solid red;
 }
 
 .select_box .box{
-  height: 1.5rem; min-width: 3rem;
+  min-height: 1.5rem; min-width: 3rem;
 }
 
 .select_box > i{ -webkit-margin-start: 1rem; margin-inline-start: 1rem;
@@ -982,7 +982,7 @@ input:invalid{ border: 2px solid red;
 
 .select_box .list{
   position: absolute; top: 2.5rem; right: 0; left: 0; background-color: var(--main_background_color);
-  border: 2px solid var(--main_text_color);
+  border: 2px solid var(--main_text_color); max-height: 150px; overflow: auto;
   width: 100%;
 }
 
@@ -992,9 +992,26 @@ input:invalid{ border: 2px solid red;
 .select_box .list li:hover{ background-color: var(--default_button_color);
 }
 
+.multi_select_box .box > div{
+  display: flex; flex-wrap: wrap; gap: .5rem;
+}
+
+.multi_select_box .box > div span{
+  background-color: var(--default_button_color); color: var(--main_text_color);
+  padding: .25rem;
+}
+
+.multi_select_box .box > div span b{
+  -webkit-margin-end: .25rem;
+          margin-inline-end: .25rem; color: var(--dark_red);
+}
+
 .input_group{
-  display: flex; justify-content: flex-start; align-items: center;
-  gap: 1rem;
+  display: flex; justify-content: flex-start; align-items: center; gap: 1rem;
+}
+
+.error{
+  width: 100%; text-align: center;
 }
 
 /* Forms Input End ============================================ */
@@ -1262,9 +1279,17 @@ input:invalid{ border: 2px solid red;
 .transaction_create{
 }
 
-.transaction_create button{
-  font-weight: bold; margin: 1rem 0;
+.transaction_create button,.transaction_edit button,.transaction_delete button{
+  font-weight: bold; margin: 1rem 0; color: var(--main_text_color);
   background-color: var(--light_green); padding: .5rem 1rem;
+}
+
+.transaction_edit button{
+  background-color: var(--light_blue);
+}
+
+.transaction_delete button{
+  background-color: var(--light_red);
 }
 
 /* Transactions End ============================================ */

@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Morilog\Jalali\Jalalian;
 
 class TransactionResource extends JsonResource
 {
@@ -14,7 +15,40 @@ class TransactionResource extends JsonResource
      */
     public function toArray($request)
     {
+        $for_user = [
+            'value' => null,
+            'name' => 'Nobody',
+        ];
+        if($this->whenLoaded('for_user') && $this->for_user){
+            $for_user = [
+                'value' => $this->for_user->id,
+                'name' => $this->for_user->name.' '.$this->for_user->family,
+            ];
+        }
+
+        $card = [
+            'value' => null,
+            'name' => 'No Card',
+        ];
+        if($this->whenLoaded('card') && $this->card){
+            $card = [
+                'value' => $this->card->id,
+                'name' => $this->card->bank,
+            ];
+        }
+
+        $transaction_groups = [];
+        if($this->whenLoaded('groups') && $this->groups){
+            foreach($this->groups as $group){
+                $transaction_groups[$group->id] = [
+                    'value' => $group->id,
+                    'name' => $group->name,
+                ];
+            }
+        }
+
         return [
+            'id' => $this->id,
             'name' => $this->title,
             'payed_by' => [
                 'avatar' => $this->whenLoaded('user')->avatar,
@@ -22,10 +56,17 @@ class TransactionResource extends JsonResource
                 'family' => ucfirst($this->whenLoaded('user')->family),
             ],
             'amount' => number_format($this->amount),
+            'raw_amount' => (string)$this->amount,
             'unit' => 'T',
-            'type' => $this->type,
-            'card' => $this->whenLoaded('card') ? $this->whenLoaded('card')->bank : 'Wallet',
+            'type' => [
+                'value' => $this->type,
+                'name' => $this->type=='+' ? 'Gain' : 'Loss',
+            ],
+            'for_user' => $for_user,
+            'transaction_groups' => $transaction_groups,
+            'card' => $card,
             'date' => date('d M,Y',strtotime($this->date)),
+            'raw_date' => Jalalian::forge($this->date)->format('%Y/%m/%d H:i:s'),
         ];
     }
 }

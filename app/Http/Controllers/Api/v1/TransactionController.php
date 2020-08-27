@@ -47,7 +47,7 @@ class TransactionController extends Controller
             'user_id' => $request->user()->id,
             'for_user_id' => $request->for_user,
             'card_id' => $request->card,
-            'transaction_group_id' => $request->transaction_group,
+            'transaction_groups' => $request->transaction_groups,
         ]);
 
         return new TransactionResource($this->transaction->read($new_transaction->id));
@@ -60,9 +60,13 @@ class TransactionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request,$id)
     {
-        //
+        $user = $request->user();
+        $this->transaction->check_user($user->id,$id);
+
+        $transaction = $this->transaction->read($id);
+        return new TransactionResource($transaction);
     }
 
     /**
@@ -72,9 +76,24 @@ class TransactionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TransactionRequest $request, $id)
     {
-        //
+        $user = $request->user();
+        $this->transaction->check_user($user->id,$id);
+
+        $date = (Jalalian::fromFormat('Y/m/d H:i:s',$request->date))->toCarbon()->toDateTimeString();
+        $transaction = $this->transaction->update([
+            'title' => $request->name,
+            'amount' => $request->amount,
+            'type' => $request->type,
+            'date' => $date,
+            'user_id' => $request->user()->id,
+            'for_user_id' => $request->for_user,
+            'card_id' => $request->card,
+            'transaction_groups' => $request->transaction_groups,
+        ],$id);
+
+        return new TransactionResource($this->transaction->read($transaction->id));
     }
 
     /**
@@ -83,8 +102,56 @@ class TransactionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
-        //
+        $user = $request->user();
+        $this->transaction->check_user($user->id,$id);
+
+        $this->transaction->delete($id);
+        return response('',200);
     }
+
+    // ======================================================================
+    // ======================================================================
+
+    /**
+     * Get the top transaction infos.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function get_top_info(Request $request){
+        $user = $request->user();
+        $top_transaction_info = $this->transaction->top_transactions($user->id);
+        $response = [
+            'total_number_of_transactions' => $top_transaction_info['total_number_of_transactions'],
+            'total_positive_transactions' => $top_transaction_info['total_positive_transactions'],
+            'total_negative_transactions' => $top_transaction_info['total_negative_transactions'],
+            'top_positive' => [
+                'name' => $top_transaction_info['top_positive']['title'],
+                'date' => date('d M,Y',strtotime($top_transaction_info['top_positive']['date'])),
+                'amount' => number_format($top_transaction_info['top_positive']['amount']),
+                'unit' => 'T',
+                'payed_by' => [
+                    'avatar' => $top_transaction_info['top_positive']['user']['avatar'],
+                    'name' => $top_transaction_info['top_positive']['user']['name'],
+                    'family' => $top_transaction_info['top_positive']['user']['family'],
+                ],
+            ],
+            'top_negative' => [
+                'name' => $top_transaction_info['top_negative']['title'],
+                'date' => date('d M,Y',strtotime($top_transaction_info['top_negative']['date'])),
+                'amount' => number_format($top_transaction_info['top_negative']['amount']),
+                'unit' => 'T',
+                'payed_by' => [
+                    'avatar' => $top_transaction_info['top_negative']['user']['avatar'],
+                    'name' => $top_transaction_info['top_negative']['user']['name'],
+                    'family' => $top_transaction_info['top_negative']['user']['family'],
+                ],
+            ],
+        ];
+
+        return response()->json($response);
+    }
+
 }

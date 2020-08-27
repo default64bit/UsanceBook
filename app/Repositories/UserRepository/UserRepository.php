@@ -33,7 +33,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         ]);
     }
 
-    public function update($id){
+    public function update(array $data,$id){
 
     }
 

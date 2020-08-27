@@ -1,5 +1,5 @@
 <template>
-    <div class="form transaction_create">
+    <div class="form transaction_edit">
         <div class="input_group">
             <input-box v-model="name" type="text" placeholder="Transaction Name"></input-box>
         </div>
@@ -52,6 +52,7 @@
 
     export default {
         name: "TransactionCreate",
+        props: ['transaction'],
         components: {
             'select-box': SelectBox,
             'multi-select-box': MultiSelectBox,
@@ -73,19 +74,17 @@
                 ],
                 transaction_groups_options: [
                     { value:'2', name:'Group1' },
-                    { value:'4', name:'Group2' },
-                    { value:'6', name:'Group31' },
-                    { value:'8', name:'Group8' },
-                    { value:'7', name:'Group7' },
-                    { value:'64', name:'Group64' },
-                    { value:'61', name:'Group322' },
                 ],
                 for_user_options: [
                     { value:null, name:'Nobody' },
                     { value:'3', name:'Gourge' },
                     { value:'2', name:'Fred' },
                 ],
-                card_options: [],
+                card_options: [
+                    { value:null, name:'No Card' },
+                    { value:'23', name:'Bank Mellat' },
+                    { value:'13', name:'Bank Sepah' },
+                ],
 
                 access_token: '',
                 error: '',
@@ -93,7 +92,13 @@
             }
         },
         mounted(){
-            this.getCards();
+
+        },
+        watch: { 
+            transaction: function(newVal,oldVal) {
+                this.getCards();
+                this.getTransaction();
+            }
         },
         methods: {
             async getCards(){
@@ -123,10 +128,39 @@
                 });
             },
 
+            async getTransaction(){
+                await token.getToken().then((value)=>{ this.access_token = value; });
+
+                this.loading = true;
+                axios({
+                    url: `/api/v1/transaction/${this.transaction.data.id}`,
+                    method: 'get',
+                    headers: {
+                        'Authorization': `Bearer ${this.access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                }).then(response=>{
+                    this.name = response.data.name;
+                    this.amount = response.data.raw_amount;
+                    this.type = response.data.type;
+                    this.date = response.data.raw_date;
+                    this.transaction_groups = response.data.transaction_groups;
+                    this.for_user = response.data.for_user;
+                    this.card = response.data.card;
+                    this.loading = false;
+                }).catch(error=>{
+                    if(error.response){
+                        this.error = error.response.data.error
+                    }
+                    this.loading = false;
+                });
+            },
+
             async submitTransaction(){
                 await token.getToken().then((value)=>{ this.access_token = value; });
 
                 let form_data = new FormData();
+                form_data.append('_method','put');
                 form_data.append('name',this.name);
                 form_data.append('amount',this.amount);
                 form_data.append('type',this.type.value);
@@ -143,7 +177,7 @@
 
                 this.loading = true;
                 axios({
-                    url: '/api/v1/transaction',
+                    url: `/api/v1/transaction/${this.transaction.data.id}`,
                     method: 'post',
                     data: form_data,
                     headers: {
@@ -152,7 +186,10 @@
                     },
                 }).then(response=>{
                     this.$parent.$emit('close');
-                    this.$parent.$emit('new_value',response.data);
+                    this.$parent.$emit('edit_value',{
+                        index: this.transaction.index,
+                        data: response.data,
+                    });
                     this.loading = false;
                 }).catch(error=>{
                     if(error.response){

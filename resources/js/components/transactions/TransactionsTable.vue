@@ -39,18 +39,18 @@
                             <span>{{transaction.payed_by.name}} {{transaction.payed_by.family}}</span>
                         </div>
                     </td>
-                    <td :type="transaction.type">
-                        <span class="text-xl">{{transaction.type}}{{transaction.amount}}</span>
+                    <td :type="transaction.type.value">
+                        <span class="text-xl">{{transaction.type.value}}{{transaction.amount}}</span>
                         <b>{{transaction.unit}}</b>
                     </td>
-                    <td>{{transaction.card}}</td>
+                    <td>{{transaction.card.name}}</td>
                     <td>{{transaction.date}}</td>
                     <td class="actions">
                         <i class="fas fa-ellipsis-v" @mouseup="toggle_menu(i,true)"></i>
                         <ul :open="transaction.menu" @mouseenter="transaction.can_close=false" @mouseleave="transaction.can_close=true">
-                            <li><button class="btn"><i class="far fa-newspaper mr-2"></i> Details</button></li>
-                            <li><button class="btn"><i class="far fa-pencil-alt mr-2"></i> Edit</button></li>
-                            <li><button class="btn"><i class="far fa-trash-alt mr-2"></i> Delete</button></li>
+                            <li><button class="btn" @click="toggle_menu(i,false)"><i class="far fa-newspaper mr-2"></i> Details</button></li>
+                            <li><button class="btn" @click="editClicked(i)"><i class="far fa-pencil-alt mr-2"></i> Edit</button></li>
+                            <li><button class="btn" @click="deleteClicked(i)"><i class="far fa-trash-alt mr-2"></i> Delete</button></li>
                         </ul>
                     </td>
                 </tr>
@@ -87,6 +87,12 @@
         created(){
             this.$parent.$on('new_value',(value)=>{
                 this.transactions.unshift(value);
+            });
+            this.$parent.$on('edit_value',(value)=>{
+                this.$set(this.transactions,value.index,value.data);
+            });
+            this.$parent.$on('delete_value',(value)=>{
+                this.transactions.splice(value.index,1);
             });
         },
         mounted(){
@@ -148,6 +154,20 @@
 
             addClicked(){
                 this.$emit('add');
+            },
+            editClicked(index){
+                this.$emit('edit',{
+                    index: index,
+                    data: this.transactions[index],
+                });
+                this.toggle_menu(index,false);
+            },
+            deleteClicked(index){
+                this.$emit('delete',{
+                    index: index,
+                    data: this.transactions[index],
+                });
+                this.toggle_menu(index,false);
             },
 
         },

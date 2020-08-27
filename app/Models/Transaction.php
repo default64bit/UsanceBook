@@ -26,7 +26,7 @@ class Transaction extends Model
         return $this->belongsTo(User::class,'user_id');
     }
     public function for_user(){
-        return $this->hasMany(User::class,'for_user_id');
+        return $this->belongsTo(User::class,'for_user_id');
     }
     public function groups(){
         return $this->hasMany(TransactionGroup::class,'transaction_id');
