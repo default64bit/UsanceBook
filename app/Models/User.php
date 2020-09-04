@@ -21,6 +21,10 @@ class User extends Authenticatable
         'avatar', 'name', 'family', 'email', 'phone', 'password',
     ];
 
+    const SEARCHABLE = [
+        'name', 'family', 'email',
+    ];
+
     /**
      * The attributes that should be hidden for arrays.
      *

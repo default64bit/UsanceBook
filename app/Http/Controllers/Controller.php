@@ -13,6 +13,18 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    public function number_with_units($number){
+        $units = ['',' K',' M',' B',' T'];
+        $count = 0;
+        $new_number = 0;
+        while($number>=1){
+            $new_number = number_format($number,2).$units[$count];
+            $new_number = str_replace('.00','',$new_number);
+            $number /= 1000; $count++;
+        }
+        return $new_number;
+    }
+
     public function clear_oauth_tables(User $user){
         $revoked_access_token_list = [];
         

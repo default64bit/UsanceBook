@@ -15,8 +15,10 @@ class UserFriend extends Model
         'who', 'with_whom', 'accepted'
     ];
 
+    const PER_PAGE = 30;
+
     /*relation*/
-    public function who(){
+    public function user(){
         return $this->belongsTo(User::class,'who');
     }
     public function whom(){

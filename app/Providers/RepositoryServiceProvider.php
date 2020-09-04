@@ -8,6 +8,8 @@ use App\Repositories\CardRepository\CardRepository;
 use App\Repositories\CardRepository\CardRepositoryInterface;
 use App\Repositories\TransactionRepository\TransactionRepository;
 use App\Repositories\TransactionRepository\TransactionRepositoryInterface;
+use App\Repositories\UserFriendRepository\UserFriendRepository;
+use App\Repositories\UserFriendRepository\UserFriendRepositoryInterface;
 use App\Repositories\UserRepository\UserRepository;
 use App\Repositories\UserRepository\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
@@ -38,6 +40,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(GroupRepositoryInterface::class, GroupRepository::class);
         $this->app->bind(TransactionRepositoryInterface::class, TransactionRepository::class);
         $this->app->bind(TransactionGroupRepositoryInterface::class, TransactionGroupRepository::class);
-        $this->app->bind(UserFrinedRepositoryInterface::class, UserFrinedRepository::class);
+        $this->app->bind(UserFriendRepositoryInterface::class, UserFriendRepository::class);
     }
 }

@@ -18,6 +18,9 @@
 
     --dark_green: #a0d66e;
     --light_green: #e5ffcc;
+
+    --dark_yellow: #ece17e;
+    --light_yellow: #fffacc;
 }
 
 @font-face{ font-family: "Vazir"; src: url('../fonts/Vazir.ttf') format('truetype'); }
@@ -271,7 +274,7 @@ input:invalid{ border: 2px solid red; }
 .input_box input{ margin: 0; }
 .input_box span[name="placeholder"]{
     display: inline-block; position: absolute; color: var(--placeholder_color); transition: all .3s;
-    top: .55rem; left: .65rem;
+    top: .6rem; left: .65rem;
 }
 .input_box span[name="placeholder"].up{
     color: var(--main_text_color); background-color: var(--main_background_color);
@@ -322,6 +325,63 @@ input:invalid{ border: 2px solid red; }
 
 .error{
     width: 100%; text-align: center;
+}
+
+.data_table{
+    width: 100%;
+}
+.data_table .toolbar{
+    width: 100%; display: flex; justify-content: flex-start; align-items: center; margin-bottom: 1rem;
+}
+.data_table .toolbar button{
+    margin-inline-start: auto; background-color: var(--light_green);
+    padding: .5rem 1rem; font-weight: bold;
+}
+
+.data_table table{
+    width: 100%;
+}
+.data_table table thead{
+    border: 2px solid var(--main_border_color); border-left: 0; border-right: 0;
+}
+.data_table table thead tr{}
+.data_table table thead tr th{
+    text-align: start; padding: .25rem 1rem;
+}
+.data_table table thead tr th span{}
+.data_table table thead tr th i{}
+.data_table table tbody{}
+.data_table table tbody tr{}
+.data_table table tbody tr:hover{ background-color: var(--default_button_color); }
+.data_table table tbody tr td{
+    padding: 1rem;
+}
+.data_table table tbody tr td .avatar{
+    border-radius: 50%; width: 2.5rem; height: 2.5rem; margin-inline-end: 1rem;
+}
+.data_table table tbody tr .actions{
+    position: relative;
+}
+.data_table table tbody tr .actions > i{
+    cursor: pointer; width: 1.5rem; height: 1.5rem;
+    display: flex; justify-content: center; align-items: center;
+}
+.data_table table tbody tr .actions > i:hover{ background-color: var(--main_border_color); }
+.data_table table tbody tr .actions ul{
+    display: none; flex-direction: column; justify-content: flex-start; align-items: flex-start;
+    border: 1px solid var(--main_border_color); z-index: 5;
+    padding: .5rem; margin: .5rem; right: 75%; top: 1.5rem;
+    position: absolute; background-color: var(--main_background_color);
+    box-shadow: var(--main_box_shadow);
+}
+.data_table table tbody tr .actions ul[open]{ display: flex; }
+.data_table table tbody tr .actions li{ width: 100%; }
+.data_table table tbody tr .actions li button{
+    display: flex; justify-content: flex-start; align-items: center;
+    padding: .5rem; width: 100%;
+}
+.data_table table tbody tr .actions li button:hover{
+    background-color: var(--default_button_color);
 }
 /* Forms Input End ============================================ */
 
@@ -395,63 +455,10 @@ input:invalid{ border: 2px solid red; }
     width: 100%; display: flex; justify-content: flex-start; align-items: flex-start;
 }
 
-.transactions .transaction_table{
-    width: 100%;
-}
-.transactions .transaction_table .toolbar{
-    width: 100%; display: flex; justify-content: flex-start; align-items: center; margin-bottom: 1rem;
-}
-.transactions .transaction_table .toolbar button{
-    margin-inline-start: auto; background-color: var(--light_green);
-    padding: .5rem 1rem; font-weight: bold;
-}
-
-.transactions .transaction_table table{
-    width: 100%;
-}
-.transactions .transaction_table table thead{
-    border: 2px solid var(--main_border_color); border-left: 0; border-right: 0;
-}
-.transactions .transaction_table table thead tr{}
-.transactions .transaction_table table thead tr th{
-    text-align: start; padding: .25rem 1rem;
-}
-.transactions .transaction_table table thead tr th span{}
-.transactions .transaction_table table thead tr th i{}
-.transactions .transaction_table table tbody{}
-.transactions .transaction_table table tbody tr{}
-.transactions .transaction_table table tbody tr:hover{ background-color: var(--default_button_color); }
-.transactions .transaction_table table tbody tr td{
-    padding: 1rem;
-}
 .transactions .transaction_table table tbody tr td[type="+"] span{ color: var(--dark_blue); }
 .transactions .transaction_table table tbody tr td[type="-"] span{ color: var(--dark_red); }
 .transactions .transaction_table table tbody tr td .avatar{
     border-radius: 50%; width: 2.5rem; height: 2.5rem; margin-inline-end: 1rem;
-}
-.transactions .transaction_table table tbody tr .actions{
-    position: relative;
-}
-.transactions .transaction_table table tbody tr .actions > i{
-    cursor: pointer; width: 1.5rem; height: 1.5rem;
-    display: flex; justify-content: center; align-items: center;
-}
-.transactions .transaction_table table tbody tr .actions > i:hover{ background-color: var(--main_border_color); }
-.transactions .transaction_table table tbody tr .actions ul{
-    display: none; flex-direction: column; justify-content: flex-start; align-items: flex-start;
-    border: 1px solid var(--main_border_color); z-index: 5;
-    padding: .5rem; margin: .5rem; right: 75%; top: 1.5rem;
-    position: absolute; background-color: var(--main_background_color);
-    box-shadow: var(--main_box_shadow);
-}
-.transactions .transaction_table table tbody tr .actions ul[open]{ display: flex; }
-.transactions .transaction_table table tbody tr .actions li{ width: 100%; }
-.transactions .transaction_table table tbody tr .actions li button{
-    display: flex; justify-content: flex-start; align-items: center;
-    padding: .5rem; width: 100%;
-}
-.transactions .transaction_table table tbody tr .actions li button:hover{
-    background-color: var(--default_button_color);
 }
 
 .transactions .transaction_info{
@@ -518,6 +525,58 @@ input:invalid{ border: 2px solid red; }
     background-color: var(--light_red);
 }
 /* Transactions End ============================================ */
+
+/* Friends ============================================ */
+.friends{
+    width: 100%; display: flex; justify-content: flex-start; align-items: flex-start;
+}
+
+.friends .friend_info{
+    display: flex; justify-content: center; align-items: center;
+    gap: 1rem;
+}
+.friends .friend_info > div{
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: .75rem 2rem; box-shadow: var(--main_box_shadow);
+    background-color: var(--main_text_color); color: var(--main_background_color);
+}
+.friends .friend_info > div h3{ font-size: 2.5rem; font-weight: bold; }
+.friends .friend_info > div b{ font-size: 1.5rem; }
+.friends .friend_info > div[name="friends"] h3{ color: var(--light_blue); }
+.friends .friend_info > div[name="pending"] h3{ color: var(--light_yellow); }
+
+.friends_table{}
+.friends_table table tbody tr td .avatar{
+    width: 4rem; height: 4rem;
+}
+.friends_table button{ padding: .25rem 1rem; min-width: 160px; }
+.friends_table button.remove{ border: 2px solid var(--dark_red); }
+.friends_table button.cancel{ background-color: var(--light_yellow); }
+.friends_table button.cancel:hover,.friends_table button.remove:hover{
+    background-color: var(--light_red); border: 0;
+}
+
+.find_new_friends{
+    width: 100%;
+}
+.find_new_friends .search_button{
+    background-color: var(--default_button_color); width: 3.5rem; height: 2.75rem;
+}
+.find_new_friends .users_list .avatar{
+    width: 3.5rem; height: 3.5rem;
+}
+.find_new_friends .users_list .btn{
+    padding: .5rem 1rem; background-color: var(--secondary_button_color); color: var(--dark_green);
+}
+
+.friendship_cancel button.cancel{ background-color: var(--dark_red); }
+
+.friend_requests button{ padding: .25rem 1rem; margin: .5rem; }
+.friend_requests .accept{
+    background-color: var(--secondary_button_color); color: var(--dark_green);
+}
+.friend_requests .reject{ border: 2px solid var(--dark_red); }
+/* Friends End ============================================ */
 
 @media (min-width: 700px){
     .header .logo{ display: block; }

@@ -1,5 +1,5 @@
 <template>
-    <div class="transaction_table">
+    <div class="data_table transaction_table">
         <div class="toolbar">
             <search v-model="search" placeholder="Search Transactions" @search="searchInTransactions()"></search>
             <button class="btn" @click="addClicked()">Add New Transaction</button>
@@ -56,7 +56,7 @@
                 </tr>
             </tbody>
         </table>
-        <hr class="my-4">
+        <hr class="mb-4">
         <div class="loading flex flex-col justify-center items-center" v-if="pagination.next">
             <button class="btn bg-gray-700" @click="getTransactions(pagination.next,false)" v-if="!loading">Load More</button>
             <span class="text-5xl fad fa-spinner fa-spin" v-else></span>
@@ -114,6 +114,12 @@
 
             async getTransactions(url = '/api/v1/transaction', first_time = true){
                 if(!url){ return 0; }
+
+                if(!first_time){
+                    if(this.search != null || this.search != undefined){
+                        url += `&search=${this.search}`;
+                    }
+                }
 
                 await token.getToken().then((value)=>{ this.access_token = value; });
 

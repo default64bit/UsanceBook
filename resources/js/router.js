@@ -17,6 +17,10 @@ import Transactions from './components/transactions/Transactions';
 
 // =================================
 
+import Friends from './components/friends/Friends';
+
+// =================================
+
 import Http404 from './components/Http404';
 
 Vue.use(VueRouter);
@@ -35,6 +39,10 @@ export default new VueRouter({
         // =================================
 
         { path: '/transactions', component: Transactions, name: 'transactions' },
+
+        // =================================
+
+        { path: '/friends', component: Friends, name: 'friends' },
 
         // =================================
 

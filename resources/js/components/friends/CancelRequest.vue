@@ -1,14 +1,19 @@
 <template>
-    <div class="form transaction_delete">
+    <div class="form friendship_cancel">
         <div class="input_group">
-            <h3 class="text-2xl" v-if="transaction.data">Do you want to delete "{{transaction.data.name}}"?</h3>
+            <h3 class="text-xl" v-if="friend.data">
+                Do you want to cancel friendship request you sent to "<b>{{friend.data.name}} {{friend.data.family}}</b>" ?
+            </h3>
         </div>
 
         <b class="error text-lg text-red-500" v-if="error!=''">{{error}}</b>
 
         <div class="loading flex flex-col justify-center items-start h-16">
             <i class="text-2xl fad fa-spinner fa-spin" v-if="loading"></i>
-            <button class="btn" @click="submitDelete()" v-else>Delete Transaction</button>
+            <div v-else>
+                <button class="btn cancel" @click="submitDelete()">Yes, Cancel Request</button>
+                <button class="btn" @click="close()">No</button>
+            </div>
         </div>
     </div>
 </template>
@@ -18,16 +23,13 @@
     import InputBox from '../layouts/form/InputBox'
 
     export default {
-        name: "TransactionDelete",
-        props: ['transaction'],
+        name: "CancelRequest",
+        props: ['friend'],
         components: {
             'input-box': InputBox,
         },
         data(){
             return {
-                name: '',
-                amount: '',
-
                 access_token: '',
                 error: '',
                 loading: false,
@@ -39,7 +41,7 @@
 
                 this.loading = true;
                 axios({
-                    url: `/api/v1/transaction/${this.transaction.data.id}`,
+                    url: `/api/v1/friends/${this.friend.data.email}`,
                     method: 'delete',
                     headers: {
                         'Authorization': `Bearer ${this.access_token}`,
@@ -47,7 +49,7 @@
                     },
                 }).then(response=>{
                     this.$parent.$emit('close');
-                    this.$parent.$emit('delete_value',this.transaction);
+                    this.$parent.$emit('cancel_value',this.friend);
                     this.loading = false;
                 }).catch(error=>{
                     if(error.response){
@@ -55,6 +57,10 @@
                     }
                     this.loading = false;
                 });
+            },
+
+            close(){
+                this.$parent.$emit('close');
             },
         }
     }
