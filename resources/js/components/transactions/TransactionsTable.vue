@@ -1,18 +1,30 @@
 <template>
     <div class="data_table transaction_table">
         <div class="toolbar">
-            <search v-model="search" placeholder="Search Transactions" @search="searchInTransactions()"></search>
+            <search v-model="search" placeholder="Search Transactions" @search="getTransactions()"></search>
+            <div class="flex">
+                <select-box :value.sync="card_filter" placeholder="Cards" :options="card_filter_options" class="w-auto m-0 ml-4" @update:value="getTransactions()">
+                    <template v-slot:option="{option}">
+                        <span :value="option.value">{{option.name}}</span>
+                    </template>
+                </select-box>
+                <select-box :value.sync="group_filter" placeholder="Groups" :options="group_filter_options" class="w-auto m-0 ml-4" @update:value="getTransactions()">
+                    <template v-slot:option="{option}">
+                        <span :value="option.value">{{option.name}}</span>
+                    </template>
+                </select-box>
+            </div>
             <button class="btn" @click="addClicked()">Add New Transaction</button>
         </div>
         <table>
             <thead>
                 <tr>
                     <th>
-                        <span>Name</span>
+                        <span>Transaction By</span>
                         <i class="fad fa-long-arrow-alt-up"></i><i class="fad fa-long-arrow-alt-down"></i>
                     </th>
                     <th>
-                        <span>Transaction By</span>
+                        <span>Name</span>
                         <i class="fad fa-long-arrow-alt-up"></i><i class="fad fa-long-arrow-alt-down"></i>
                     </th>
                     <th>
@@ -30,15 +42,15 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody v-if="transactions.length>0">
                 <tr v-for="(transaction,i) in transactions" :key="i">
-                    <td>{{transaction.name}}</td>
                     <td>
                         <div class="flex items-center">
                             <img class="avatar" :src="transaction.payed_by.avatar" alt="">
                             <span>{{transaction.payed_by.name}} {{transaction.payed_by.family}}</span>
                         </div>
                     </td>
+                    <td>{{transaction.name}}</td>
                     <td :type="transaction.type.value">
                         <span class="text-xl">{{transaction.type.value}}{{transaction.amount}}</span>
                         <b>{{transaction.unit}}</b>
@@ -55,6 +67,7 @@
                     </td>
                 </tr>
             </tbody>
+            <div class="my-4 text-center" v-else>No Data</div>
         </table>
         <hr class="mb-4">
         <div class="loading flex flex-col justify-center items-center" v-if="pagination.next">
@@ -66,12 +79,14 @@
 
 <script>
     import token from '../../auth/token'
+    import SelectBox from '../layouts/form/SelectBox'
     import Search from '../layouts/form/Search'
 
     export default {
         name: 'TransactionsTable',
         components: {
-            'search': Search
+            'select-box': SelectBox,
+            'search': Search,
         },
         data(){
             return {
@@ -79,6 +94,14 @@
                 pagination: {},
 
                 search: '',
+                card_filter: { value:'', name:'All' },
+                group_filter: { value:'', name:'All' },
+                card_filter_options: {
+                    '0': { value:'', name:'All' }
+                },
+                group_filter_options: {
+                    '0': { value:'', name:'All' }
+                },
 
                 loading: false,
                 access_token: '',
@@ -104,7 +127,14 @@
                 }
             });
 
-            this.getTransactions();
+            Promise.all([
+                this.getCards(),
+                this.getGroups(),
+            ]).then(()=>{
+                console.log(1);
+                this.addOtherParams();
+                this.getTransactions();
+            });
         },
         methods: {
             toggle_menu(index,state){
@@ -113,12 +143,18 @@
             },
 
             async getTransactions(url = '/api/v1/transaction', first_time = true){
+                console.log(1);
                 if(!url){ return 0; }
 
-                if(!first_time){
-                    if(this.search != null || this.search != undefined){
-                        url += `&search=${this.search}`;
-                    }
+                if(first_time){ url += '?'; }
+                if(this.search != null && this.search != undefined){
+                    url += `&search=${this.search}`;
+                }
+                if(this.card_filter.value != '' && this.card_filter.value != null && this.card_filter.value != undefined){
+                    url += `&card=${this.card_filter.value}`;
+                }
+                if(this.group_filter.value != '' && this.group_filter.value != null && this.group_filter.value != undefined){
+                    url += `&group=${this.group_filter.value}`;
                 }
 
                 await token.getToken().then((value)=>{ this.access_token = value; });
@@ -150,12 +186,60 @@
                 });
             },
 
-            searchInTransactions(){
-                let url = '/api/v1/transaction';
-                if(this.search != null || this.search != undefined){
-                    url += `?search=${this.search}`;
-                }
-                this.getTransactions(url);
+            async getCards(url = '/api/v1/cards'){
+                await token.getToken().then((value)=>{ this.access_token = value; });
+                url += '?all=true';
+
+                let done = false;
+                await axios({
+                    url: url,
+                    method: 'get',
+                    headers: {
+                        'Authorization': `Bearer ${this.access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                }).then(response=>{
+                    for(let i=0 ; i<response.data.length ; i++){
+                        this.card_filter_options[response.data[i].id] = {
+                            value:response.data[i].id, name:response.data[i].bank
+                        };
+                    }
+                    done = true;
+                }).catch(error=>{
+                    done = true;
+                });
+
+                return new Promise((resolve,reject)=>{
+                    if(done){resolve();}
+                });
+            },
+
+            async getGroups(url = '/api/v1/groups'){
+                await token.getToken().then((value)=>{ this.access_token = value; });
+                url += '?all=true';
+
+                let done = false;
+                await axios({
+                    url: url,
+                    method: 'get',
+                    headers: {
+                        'Authorization': `Bearer ${this.access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                }).then(response=>{
+                    for(let i=0 ; i<response.data.length ; i++){
+                        this.group_filter_options[response.data[i].id] = {
+                            value:response.data[i].id, name:response.data[i].name
+                        };
+                    }
+                    done = true;
+                }).catch(error=>{
+                    done = true;
+                });
+
+                return new Promise((resolve,reject)=>{
+                    if(done){resolve();}
+                });
             },
 
             addClicked(){
@@ -174,6 +258,22 @@
                     data: this.transactions[index],
                 });
                 this.toggle_menu(index,false);
+            },
+
+            addOtherParams(){
+                let url_bar = window.location.href;
+                if(url_bar.indexOf('?') != -1){
+                    url_bar = url_bar.substring(url_bar.indexOf('?')+1,url_bar.length);
+                    let params = url_bar.split('&');
+                    for(let i=0 ; i<params.length ; i++){
+                        let param = params[i].split('=');
+
+                        switch(param[0]){
+                            case 'card': this.card_filter = this.card_filter_options[param[1]]; break;
+                            case 'group': this.group_filter = this.group_filter_options[param[1]]; break;
+                        }
+                    }
+                }
             },
 
         },

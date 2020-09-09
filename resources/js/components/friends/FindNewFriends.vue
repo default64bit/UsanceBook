@@ -37,7 +37,6 @@
 
 <script>
     import token from '../../auth/token'
-    import {mask} from 'vue-the-mask'
     import InputBox from '../layouts/form/InputBox'
 
     export default {

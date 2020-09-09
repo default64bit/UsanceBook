@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class TransactionRequest extends FormRequest
+class CardsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -35,14 +35,8 @@ class TransactionRequest extends FormRequest
     public function rules()
     {
         $rule = [
-            'name' => 'required|max:255|string',
-            'amount' => 'required|numeric|digits_between:1,30',
-            'type' => 'required|in:+,-',
-            'date' => 'required|max:255|string',
-            'transaction_groups' => 'sometimes|json',
-            'transaction_groups.*.value' => 'sometimes|max:255|numeric|exists:groups,id',
-            'for_user' => 'sometimes|max:255|numeric|exists:users,id',
-            'card' => 'sometimes|max:255|numeric|exists:cards,id',
+            'bank_name' => 'required|string|max:255',
+            'card_number' => 'required|string|max:255',
         ];
 
         switch($this->method()){

@@ -14,7 +14,7 @@ interface TransactionRepositoryInterface extends BaseRepositoryInterface
 
     public function read($id);
 
-    public function all_transactions($search=null,$user_id,$per_page);
+    public function all_transactions($filters=[],$user_id,$per_page);
 
     public function top_transactions($user_id);
     

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\CardsRequest;
 use App\Http\Resources\CardResource;
 use App\Models\Card;
 use App\Repositories\CardRepository\CardRepositoryInterface;
@@ -39,9 +40,15 @@ class CardsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CardsRequest $request)
     {
-        //
+        $new_card = $this->card->create([
+            'bank' => $request->bank_name,
+            'number' => $request->card_number,
+            'user_id' => $request->user()->id,
+        ]);
+
+        return new CardResource($this->card->read($new_card->id));
     }
 
     /**
@@ -50,9 +57,13 @@ class CardsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        //
+        $user = $request->user();
+        $this->card->check_user($user->id,$id);
+
+        $card = $this->card->read($id);
+        return new CardResource($card);
     }
 
     /**
@@ -62,9 +73,17 @@ class CardsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CardsRequest $request, $id)
     {
-        //
+        $user = $request->user();
+        $this->card->check_user($user->id,$id);
+
+        $card = $this->card->update([
+            'bank' => $request->bank_name,
+            'number' => $request->card_number,
+        ],$id);
+
+        return new CardResource($this->card->read($card->id));
     }
 
     /**
@@ -73,8 +92,12 @@ class CardsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        $user = $request->user();
+        $this->card->check_user($user->id,$id);
+
+        $this->card->delete($id);
+        return response('',200);
     }
 }

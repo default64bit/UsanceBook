@@ -26,7 +26,11 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $all_transactions = $this->transaction->all_transactions($request->search,$user->id,Transaction::PER_PAGE);
+        $filters = [
+            'search' => $request->search,
+            'card' => $request->card,
+        ];
+        $all_transactions = $this->transaction->all_transactions($filters,$user->id,Transaction::PER_PAGE);
         return TransactionResource::collection($all_transactions);
     }
 

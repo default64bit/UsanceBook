@@ -2,9 +2,12 @@
 
 namespace App\Repositories\TransactionRepository;
 
+use App\Filters\CardFilter;
+use App\Filters\GroupFilter;
 use App\Models\Transaction;
 use App\Models\TransactionGroup;
 use App\Repositories\BaseRepository;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Str;
 
 class TransactionRepository extends BaseRepository implements TransactionRepositoryInterface
@@ -106,17 +109,25 @@ class TransactionRepository extends BaseRepository implements TransactionReposit
         ];
     }
 
-    public function all_transactions($search=null,$user_id,$per_page){
+    public function all_transactions($filters=[],$user_id,$per_page){
         $all_transactions = $this->transaction->where(function($query) use($user_id){
             $query->where('user_id',$user_id)->orWhere('for_user_id',$user_id);
         });
 
-        if($search != null){
+
+        if(isset($filters['search']) && !empty($filters['search'])){
+            $search = $filters['search'];
             $all_transactions = $this->search($all_transactions,$this->transaction::SEARCHABLE,$search)
                 ->orWhereHas('card',function($query) use($search){
                     $query->where('bank','like',"%$search%");
                 });
         }
+        $all_transactions = app(Pipeline::class)
+            ->send($all_transactions)
+            ->through([
+                CardFilter::class,
+                GroupFilter::class,
+            ])->thenReturn();
 
         $all_transactions = $all_transactions->with(['user','card'])
             ->latest()

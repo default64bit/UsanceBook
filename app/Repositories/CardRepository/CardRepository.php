@@ -21,11 +21,21 @@ class CardRepository extends BaseRepository implements CardRepositoryInterface
     }
 
     public function create(array $data){
-        
+        $new_card = $this->card->create([
+            'bank' => $data['bank'],
+            'number' => $data['number'],
+            'user_id' => $data['user_id'],
+        ]);
+        return $new_card;
     }
 
     public function update(array $data,$id){
-        
+        $card = $this->card->findOrFail($id);
+        $card->update([
+            'bank' => $data['bank'],
+            'number' => $data['number'],
+        ]);
+        return $card;
     }
 
     public function read($id){

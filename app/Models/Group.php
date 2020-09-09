@@ -16,15 +16,21 @@ class Group extends Model
     ];
 
     const WHO_CAN_SEE = [
-        'everyone' => 'همه',
-        'friends' => 'دوستان',
-        'only_me' => 'فقط من',
+        'everyone' => 'Everyone',
+        'friends' => 'Friends',
+        'only_me' => 'Only Me',
     ];
     const WHO_CAN_PAY = [
-        'everyone' => 'همه',
-        'friends' => 'دوستان',
-        'only_me' => 'فقط من',
+        'everyone' => 'Everyone',
+        'friends' => 'Friends',
+        'only_me' => 'Only Me',
     ];
+
+    const SEARCHABLE = [
+        'name',
+    ];
+
+    const PER_PAGE = 30;
 
     /*relation*/
     public function owner(){

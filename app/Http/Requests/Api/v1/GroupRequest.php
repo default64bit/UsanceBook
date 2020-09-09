@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests\Api\v1;
 
+use App\Models\Group;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class TransactionRequest extends FormRequest
+class GroupRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -35,14 +36,9 @@ class TransactionRequest extends FormRequest
     public function rules()
     {
         $rule = [
-            'name' => 'required|max:255|string',
-            'amount' => 'required|numeric|digits_between:1,30',
-            'type' => 'required|in:+,-',
-            'date' => 'required|max:255|string',
-            'transaction_groups' => 'sometimes|json',
-            'transaction_groups.*.value' => 'sometimes|max:255|numeric|exists:groups,id',
-            'for_user' => 'sometimes|max:255|numeric|exists:users,id',
-            'card' => 'sometimes|max:255|numeric|exists:cards,id',
+            'name' => 'required|string|max:255',
+            'who_can_see' => 'required|string|in:'.implode(',',array_keys(Group::WHO_CAN_SEE)),
+            'who_can_pay' => 'required|string|in:'.implode(',',array_keys(Group::WHO_CAN_PAY)),
         ];
 
         switch($this->method()){

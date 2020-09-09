@@ -17,6 +17,14 @@ import Transactions from './components/transactions/Transactions';
 
 // =================================
 
+import Cards from './components/cards/Cards';
+
+// =================================
+
+import Groups from './components/groups/Groups';
+
+// =================================
+
 import Friends from './components/friends/Friends';
 
 // =================================
@@ -39,6 +47,14 @@ export default new VueRouter({
         // =================================
 
         { path: '/transactions', component: Transactions, name: 'transactions' },
+
+        // =================================
+
+        { path: '/cards', component: Cards, name: 'cards' },
+
+        // =================================
+
+        { path: '/groups', component: Groups, name: 'groups' },
 
         // =================================
 

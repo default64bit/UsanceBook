@@ -6,6 +6,8 @@ use App\Repositories\BaseRepository;
 use App\Repositories\BaseRepositoryInterface;
 use App\Repositories\CardRepository\CardRepository;
 use App\Repositories\CardRepository\CardRepositoryInterface;
+use App\Repositories\GroupRepository\GroupRepository;
+use App\Repositories\GroupRepository\GroupRepositoryInterface;
 use App\Repositories\TransactionRepository\TransactionRepository;
 use App\Repositories\TransactionRepository\TransactionRepositoryInterface;
 use App\Repositories\UserFriendRepository\UserFriendRepository;

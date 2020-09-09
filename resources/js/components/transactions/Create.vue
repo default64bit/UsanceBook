@@ -45,7 +45,6 @@
 
 <script>
     import token from '../../auth/token'
-    import {mask} from 'vue-the-mask'
     import SelectBox from '../layouts/form/SelectBox'
     import MultiSelectBox from '../layouts/form/MultiSelectBox'
     import InputBox from '../layouts/form/InputBox'

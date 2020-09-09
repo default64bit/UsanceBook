@@ -633,6 +633,15 @@ a{
   border-bottom: 2px solid var(--main_border_color);
 }
 
+.Vazir{ font-family: 'Vazir';
+}
+
+.Roboto{ font-family: 'Roboto';
+}
+
+.Times{ font-family: 'Times';
+}
+
 #app{
   /* min-height: 100%; */
 }
@@ -902,7 +911,7 @@ input:invalid{ border: 2px solid red;
 
 .dialog .dialog_box{
   position: relative; background-color: var(--main_background_color);
-  width: 100%; width: auto; max-width: 480px; min-height: 10vh; z-index: 2; padding: 0 1rem;
+  width: 100%; max-width: 480px; min-height: 10vh; z-index: 2; padding: 0 1rem;
   display: flex; flex-direction: column;
 }
 
@@ -985,7 +994,9 @@ input:invalid{ border: 2px solid red;
 .select_box .list{
   position: absolute; top: 2.5rem; right: 0; left: 0; background-color: var(--main_background_color);
   border: 2px solid var(--main_text_color); max-height: 150px; overflow: auto;
-  width: 100%;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content; min-width: 100%;
 }
 
 .select_box .list li{ padding: .5rem; cursor: pointer;
@@ -1285,7 +1296,7 @@ input:invalid{ border: 2px solid red;
 .transaction_create{
 }
 
-.transaction_create button,.transaction_edit button,.transaction_delete button{
+.transaction_create button,.transaction_edit button{
   font-weight: bold; margin: 1rem 0; color: var(--main_text_color);
   background-color: var(--light_green); padding: .5rem 1rem;
 }
@@ -1294,8 +1305,8 @@ input:invalid{ border: 2px solid red;
   background-color: var(--light_blue);
 }
 
-.transaction_delete button{
-  background-color: var(--light_red);
+.transaction_delete button.delete{
+  background-color: var(--dark_red);
 }
 
 /* Transactions End ============================================ */
@@ -1379,6 +1390,131 @@ input:invalid{ border: 2px solid red;
 }
 
 /* Friends End ============================================ */
+
+/* Cards ============================================ */
+
+.cards{
+  width: 100%; display: flex; justify-content: center; align-items: flex-start;
+}
+
+.cards .cards_table{
+  max-width: 1024px;
+}
+
+.cards .cards_table table{
+  display: block;
+}
+
+.cards .cards_table tbody{
+  display: grid; grid-template-columns: repeat( auto-fit, minmax(322px, 1fr) );
+  gap: 2rem; padding: 2rem;
+}
+
+.cards .cards_table tr{
+  position: relative; padding: 1rem;
+  display: flex; flex-direction: column; justify-self: center;
+  width: 322px; height: 184px; border-radius: 10px;
+}
+
+.cards .cards_table td{
+  display: block; padding: 0;
+}
+
+.cards .cards_table td[name="number"]{
+  font-size: 27px; letter-spacing: 0; word-spacing: 8px;
+}
+
+.cards .cards_table td.actions{
+  position: absolute; right: 0; bottom: 0; padding: 1rem;
+}
+
+.cards .cards_table td.actions i{
+  background-color: var(--main_background_color); box-shadow: var(--main_box_shadow);
+}
+
+.card_style1,.card_style2,.card_style3,.card_style4{ background-repeat: no-repeat;
+}
+
+.card_style1{ background-image: url('../assets/card1.png');
+}
+
+.card_style2{ background-image: url('../assets/card2.png');
+}
+
+.card_style3{ background-image: url('../assets/card3.png');
+}
+
+.card_style4{ background-image: url('../assets/card4.png');
+}
+
+.card_create button{ background-color: var(--light_green); color: var(--main_text_color); font-weight: bold;
+}
+
+.card_delete button.delete{ background-color: var(--dark_red);
+}
+
+/* Cards End ============================================ */
+
+/* Groups End ============================================ */
+
+.groups{
+  width: 100%; display: flex; justify-content: center; align-items: flex-start;
+}
+
+.groups .groups_table{
+  max-width: 1024px;
+}
+
+.groups .groups_table table{
+  display: block;
+}
+
+.groups .groups_table tbody{
+  display: grid; grid-template-columns: repeat( auto-fit, minmax(322px, 1fr) );
+  gap: 2rem; padding: 2rem;
+}
+
+.groups .groups_table tr{
+  position: relative; padding: 1rem; padding-left: .5rem; border: 2px solid var(--main_border_color);
+  display: flex; flex-direction: column; justify-self: center;
+  z-index: 0; background-color: var(--main_background_color);
+}
+
+.groups .groups_table tr:hover{ background-color: var(--main_background_color);
+}
+
+.groups .groups_table tr::after,.groups .groups_table tr::before{
+  content: ''; display: inline-block; position: absolute; background-color: var(--main_background_color);
+  border: 2px solid var(--main_border_color); width: 100%; height: 100%;
+}
+
+.groups .groups_table tr::after{
+  top: .2rem; right: .75rem; z-index: -3;
+}
+
+.groups .groups_table tr::before{
+  top: .5rem; left: -.25rem; z-index: -2;
+}
+
+.groups .groups_table td{
+  display: block; padding: 0;
+}
+
+.groups .groups_table td[type="+"]{ color: var(--dark_blue);
+}
+
+.groups .groups_table td[type="-"]{ color: var(--dark_red);
+}
+
+.groups .groups_table td.actions{
+  position: absolute; right: 1rem; top: 1.25rem;
+}
+
+.groups .groups_table td.actions i{
+  background-color: var(--default_button_color); box-shadow: var(--main_box_shadow);
+}
+
+/* Groups End ============================================ */
 
 @media (min-width: 700px){
   .header .logo{ display: block;
