@@ -39,10 +39,10 @@ class TransactionResource extends JsonResource
 
         $transaction_groups = [];
         if($this->whenLoaded('groups') && $this->groups){
-            foreach($this->groups as $group){
-                $transaction_groups[$group->id] = [
-                    'value' => $group->id,
-                    'name' => $group->name,
+            foreach($this->groups as $transaction_group){
+                $transaction_groups[$transaction_group->group->id] = [
+                    'value' => $transaction_group->group->id,
+                    'name' => $transaction_group->group->name,
                 ];
             }
         }

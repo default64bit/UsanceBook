@@ -3,12 +3,16 @@
         <div class="toolbar">
             <search v-model="search" placeholder="Search Transactions" @search="getTransactions()"></search>
             <div class="flex">
-                <select-box :value.sync="card_filter" placeholder="Cards" :options="card_filter_options" class="w-auto m-0 ml-4" @update:value="getTransactions()">
+                <select-box :value.sync="card_filter" placeholder="Cards" :options="card_filter_options"
+                    :searchable="true" @search="searchCardList"
+                    class="w-auto m-0 ml-4" @update:value="getTransactions()">
                     <template v-slot:option="{option}">
                         <span :value="option.value">{{option.name}}</span>
                     </template>
                 </select-box>
-                <select-box :value.sync="group_filter" placeholder="Groups" :options="group_filter_options" class="w-auto m-0 ml-4" @update:value="getTransactions()">
+                <select-box :value.sync="group_filter" placeholder="Groups" :options="group_filter_options"
+                    :searchable="true" @search="searchGroupList"
+                    class="w-auto m-0 ml-4" @update:value="getTransactions()">
                     <template v-slot:option="{option}">
                         <span :value="option.value">{{option.name}}</span>
                     </template>
@@ -131,7 +135,6 @@
                 this.getCards(),
                 this.getGroups(),
             ]).then(()=>{
-                console.log(1);
                 this.addOtherParams();
                 this.getTransactions();
             });
@@ -143,7 +146,6 @@
             },
 
             async getTransactions(url = '/api/v1/transaction', first_time = true){
-                console.log(1);
                 if(!url){ return 0; }
 
                 if(first_time){ url += '?'; }
@@ -188,7 +190,7 @@
 
             async getCards(url = '/api/v1/cards'){
                 await token.getToken().then((value)=>{ this.access_token = value; });
-                url += '?all=true';
+                // url += '?all=true';
 
                 let done = false;
                 await axios({
@@ -199,9 +201,10 @@
                         'Content-Type': 'application/json'
                     },
                 }).then(response=>{
-                    for(let i=0 ; i<response.data.length ; i++){
-                        this.card_filter_options[response.data[i].id] = {
-                            value:response.data[i].id, name:response.data[i].bank
+                    this.card_filter_options = { '0': { value:'', name:'All' } };
+                    for(let i=0 ; i<response.data.data.length ; i++){
+                        this.card_filter_options[response.data.data[i].id] = {
+                            value:response.data.data[i].id, name:response.data.data[i].bank
                         };
                     }
                     done = true;
@@ -213,10 +216,13 @@
                     if(done){resolve();}
                 });
             },
+            searchCardList(value){
+                this.getCards('/api/v1/cards?search='+value);
+            },
 
             async getGroups(url = '/api/v1/groups'){
                 await token.getToken().then((value)=>{ this.access_token = value; });
-                url += '?all=true';
+                // url += '?all=true';
 
                 let done = false;
                 await axios({
@@ -227,9 +233,10 @@
                         'Content-Type': 'application/json'
                     },
                 }).then(response=>{
-                    for(let i=0 ; i<response.data.length ; i++){
-                        this.group_filter_options[response.data[i].id] = {
-                            value:response.data[i].id, name:response.data[i].name
+                    this.group_filter_options = { '0': { value:'', name:'All' } };
+                    for(let i=0 ; i<response.data.data.length ; i++){
+                        this.group_filter_options[response.data.data[i].id] = {
+                            value:response.data.data[i].id, name:response.data.data[i].name
                         };
                     }
                     done = true;
@@ -240,6 +247,9 @@
                 return new Promise((resolve,reject)=>{
                     if(done){resolve();}
                 });
+            },
+            searchGroupList(value){
+                this.getGroups('/api/v1/groups?search='+value);
             },
 
             addClicked(){

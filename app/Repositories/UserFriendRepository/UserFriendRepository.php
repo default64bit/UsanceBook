@@ -2,9 +2,11 @@
 
 namespace App\Repositories\UserFriendRepository;
 
+use App\Filters\PayableFilter;
 use App\Models\User;
 use App\Models\UserFriend;
 use App\Repositories\BaseRepository;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Str;
 
 class UserFriendRepository extends BaseRepository implements UserFriendRepositoryInterface
@@ -76,6 +78,13 @@ class UserFriendRepository extends BaseRepository implements UserFriendRepositor
             };
             $all_friends = $all_friends->whereHas('user',$search_function)->orWhereHas('whom',$search_function);
         }
+
+        // $all_friends = app(Pipeline::class)
+        //     ->send($all_friends)
+        //     ->through([
+        //         PayableFilter::class,
+        //     ])
+        //     ->thenReturn();
 
         $all_friends = $all_friends->with(['user','whom'])->latest();
         if($per_page != 'all'){

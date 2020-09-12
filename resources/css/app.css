@@ -306,18 +306,25 @@ input:invalid{ border: 2px solid red; }
 }
 .select_box .list{
     position: absolute; top: 2.5rem; right: 0; left: 0; background-color: var(--main_background_color);
-    border: 2px solid var(--main_text_color); max-height: 150px; overflow: auto;
+    border: 2px solid var(--main_text_color); max-height: 200px; overflow: auto;
     width: max-content; min-width: 100%;
 }
 .select_box .list li{ padding: .5rem; cursor: pointer; }
 .select_box .list li:hover{ background-color: var(--default_button_color); }
+
+.select_box .list div[name="search"]{
+    position: sticky; top: 0;
+}
+.select_box .list div[name="search"] input{
+    border: 0; border-bottom: 2px solid var(--main_border_color); margin: 0;
+}
 
 .multi_select_box .box > div{
     display: flex; flex-wrap: wrap; gap: .5rem;
 }
 .multi_select_box .box > div span{
     background-color: var(--default_button_color); color: var(--main_text_color);
-    padding: .25rem;
+    padding: .25rem .5rem;
 }
 .multi_select_box .box > div span b{
     margin-inline-end: .25rem; color: var(--dark_red);

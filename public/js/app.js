@@ -5328,13 +5328,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "MultiSelectBox",
-  props: ['values', 'placeholder', 'options'],
+  props: ['values', 'placeholder', 'options', 'searchable'],
   data: function data() {
     return {
       open: false,
       can_close: true,
+      timeout: '',
+      search_query: '',
       selected_values: {}
     };
   },
@@ -5347,6 +5352,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.open = false;
       }
     });
+    this.timeout = setTimeout(function () {}, 0);
   },
   methods: {
     toggle_menu: function toggle_menu(state) {
@@ -5372,6 +5378,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     closeable: function closeable(state) {
       this.can_close = state;
+    },
+    search: function search() {
+      var _this2 = this;
+
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(function () {
+        _this2.$emit('search', _this2.search_query);
+      }, 2000);
     }
   }
 });
@@ -5455,13 +5469,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "SelectBox",
-  props: ['value', 'placeholder', 'options'],
+  props: ['value', 'placeholder', 'options', 'searchable'],
   data: function data() {
     return {
       open: false,
-      can_close: true
+      can_close: true,
+      timeout: '',
+      search_query: ''
     };
   },
   created: function created() {},
@@ -5473,6 +5492,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.open = false;
       }
     });
+    this.timeout = setTimeout(function () {}, 0);
   },
   methods: {
     toggle_menu: function toggle_menu(state) {
@@ -5484,6 +5504,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     closeable: function closeable(state) {
       this.can_close = state;
+    },
+    search: function search() {
+      var _this2 = this;
+
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(function () {
+        _this2.$emit('search', _this2.search_query);
+      }, 2000);
     }
   }
 });
@@ -5836,6 +5864,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -5863,38 +5897,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         value: '-',
         name: 'Loss'
       }],
-      transaction_groups_options: [{
-        value: '2',
-        name: 'Group1'
-      }, {
-        value: '4',
-        name: 'Group2'
-      }, {
-        value: '6',
-        name: 'Group31'
-      }, {
-        value: '8',
-        name: 'Group8'
-      }, {
-        value: '7',
-        name: 'Group7'
-      }, {
-        value: '64',
-        name: 'Group64'
-      }, {
-        value: '61',
-        name: 'Group322'
-      }],
-      for_user_options: [{
-        value: null,
-        name: 'Nobody'
-      }, {
-        value: '3',
-        name: 'Gourge'
-      }, {
-        value: '2',
-        name: 'Fred'
-      }],
+      transaction_groups_options: [],
+      for_user_options: [],
       card_options: [],
       access_token: '',
       error: '',
@@ -5902,40 +5906,42 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   mounted: function mounted() {
+    this.getTransactionGroups();
+    this.getFriends();
     this.getCards();
   },
   methods: {
-    getCards: function getCards() {
-      var _this = this;
+    getTransactionGroups: function getTransactionGroups() {
+      var _arguments = arguments,
+          _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var url;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                url = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : '/api/v1/groups';
+                _context.next = 3;
                 return _auth_token__WEBPACK_IMPORTED_MODULE_1__["default"].getToken().then(function (value) {
                   _this.access_token = value;
                 });
 
-              case 2:
+              case 3:
                 axios({
-                  url: '/api/v1/cards?all=true',
+                  url: url,
                   method: 'get',
                   headers: {
                     'Authorization': "Bearer ".concat(_this.access_token),
                     'Content-Type': 'application/json'
                   }
                 }).then(function (response) {
-                  _this.card_options = [{
-                    value: null,
-                    name: 'No Card'
-                  }];
+                  _this.transaction_groups_options = [];
 
-                  for (var i = 0; i < response.data.length; i++) {
-                    _this.card_options.push({
-                      value: response.data.id,
-                      name: response.data.bank
+                  for (var i = 0; i < response.data.data.length; i++) {
+                    _this.transaction_groups_options.push({
+                      value: response.data.data[i].id,
+                      name: response.data.data[i].name
                     });
                   }
                 })["catch"](function (error) {
@@ -5944,7 +5950,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }
                 });
 
-              case 3:
+              case 4:
               case "end":
                 return _context.stop();
             }
@@ -5952,68 +5958,177 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee);
       }))();
     },
-    submitTransaction: function submitTransaction() {
-      var _this2 = this;
+    searchTransactionGroupsList: function searchTransactionGroupsList(value) {
+      this.getTransactionGroups('/api/v1/groups?search=' + value);
+    },
+    getFriends: function getFriends() {
+      var _arguments2 = arguments,
+          _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-        var form_data;
+        var url;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                _context2.next = 2;
+                url = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : '/api/v1/friends';
+                _context2.next = 3;
                 return _auth_token__WEBPACK_IMPORTED_MODULE_1__["default"].getToken().then(function (value) {
                   _this2.access_token = value;
                 });
 
-              case 2:
-                form_data = new FormData();
-                form_data.append('name', _this2.name);
-                form_data.append('amount', _this2.amount);
-                form_data.append('type', _this2.type.value);
-                form_data.append('date', _this2.date);
-
-                if (_this2.transaction_groups) {
-                  form_data.append('transaction_groups', JSON.stringify(_this2.transaction_groups));
-                }
-
-                if (_this2.for_user.value) {
-                  form_data.append('for_user', _this2.for_user.value);
-                }
-
-                if (_this2.card.value) {
-                  form_data.append('card', _this2.card.value);
-                }
-
-                _this2.loading = true;
+              case 3:
                 axios({
-                  url: '/api/v1/transaction',
-                  method: 'post',
-                  data: form_data,
+                  url: url,
+                  method: 'get',
                   headers: {
                     'Authorization': "Bearer ".concat(_this2.access_token),
                     'Content-Type': 'application/json'
                   }
                 }).then(function (response) {
-                  _this2.$parent.$emit('close');
+                  _this2.for_user_options = [{
+                    value: null,
+                    name: 'Nobody'
+                  }];
 
-                  _this2.$parent.$emit('new_value', response.data);
-
-                  _this2.loading = false;
+                  for (var i = 0; i < response.data.data.length; i++) {
+                    _this2.for_user_options.push({
+                      value: response.data.data[i].id,
+                      name: response.data.data[i].name + ' ' + response.data.data[i].family
+                    });
+                  }
                 })["catch"](function (error) {
                   if (error.response) {
                     _this2.error = error.response.data.error;
                   }
-
-                  _this2.loading = false;
                 });
 
-              case 12:
+              case 4:
               case "end":
                 return _context2.stop();
             }
           }
         }, _callee2);
+      }))();
+    },
+    searchFriendList: function searchFriendList(value) {
+      this.getFriends('/api/v1/friends?search=' + value);
+    },
+    getCards: function getCards() {
+      var _arguments3 = arguments,
+          _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var url;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                url = _arguments3.length > 0 && _arguments3[0] !== undefined ? _arguments3[0] : '/api/v1/cards';
+                _context3.next = 3;
+                return _auth_token__WEBPACK_IMPORTED_MODULE_1__["default"].getToken().then(function (value) {
+                  _this3.access_token = value;
+                });
+
+              case 3:
+                axios({
+                  url: url,
+                  method: 'get',
+                  headers: {
+                    'Authorization': "Bearer ".concat(_this3.access_token),
+                    'Content-Type': 'application/json'
+                  }
+                }).then(function (response) {
+                  _this3.card_options = [{
+                    value: null,
+                    name: 'No Card'
+                  }];
+
+                  for (var i = 0; i < response.data.data.length; i++) {
+                    _this3.card_options.push({
+                      value: response.data.data[i].id,
+                      name: response.data.data[i].bank
+                    });
+                  }
+                })["catch"](function (error) {
+                  if (error.response) {
+                    _this3.error = error.response.data.error;
+                  }
+                });
+
+              case 4:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    searchCardList: function searchCardList(value) {
+      this.getCards('/api/v1/cards?search=' + value);
+    },
+    submitTransaction: function submitTransaction() {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+        var form_data;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return _auth_token__WEBPACK_IMPORTED_MODULE_1__["default"].getToken().then(function (value) {
+                  _this4.access_token = value;
+                });
+
+              case 2:
+                form_data = new FormData();
+                form_data.append('name', _this4.name);
+                form_data.append('amount', _this4.amount);
+                form_data.append('type', _this4.type.value);
+                form_data.append('date', _this4.date);
+
+                if (_this4.transaction_groups) {
+                  form_data.append('transaction_groups', JSON.stringify(_this4.transaction_groups));
+                }
+
+                if (_this4.for_user.value) {
+                  form_data.append('for_user', _this4.for_user.value);
+                }
+
+                if (_this4.card.value) {
+                  form_data.append('card', _this4.card.value);
+                }
+
+                _this4.loading = true;
+                axios({
+                  url: '/api/v1/transaction',
+                  method: 'post',
+                  data: form_data,
+                  headers: {
+                    'Authorization': "Bearer ".concat(_this4.access_token),
+                    'Content-Type': 'application/json'
+                  }
+                }).then(function (response) {
+                  _this4.$parent.$emit('close');
+
+                  _this4.$parent.$emit('new_value', response.data);
+
+                  _this4.loading = false;
+                })["catch"](function (error) {
+                  if (error.response) {
+                    _this4.error = error.response.data.error;
+                  }
+
+                  _this4.loading = false;
+                });
+
+              case 12:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
       }))();
     }
   }
@@ -6196,6 +6311,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -6225,30 +6346,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         value: '-',
         name: 'Loss'
       }],
-      transaction_groups_options: [{
-        value: '2',
-        name: 'Group1'
-      }],
-      for_user_options: [{
-        value: null,
-        name: 'Nobody'
-      }, {
-        value: '3',
-        name: 'Gourge'
-      }, {
-        value: '2',
-        name: 'Fred'
-      }],
-      card_options: [{
-        value: null,
-        name: 'No Card'
-      }, {
-        value: '23',
-        name: 'Bank Mellat'
-      }, {
-        value: '13',
-        name: 'Bank Sepah'
-      }],
+      transaction_groups_options: [],
+      for_user_options: [],
+      card_options: [],
       access_token: '',
       error: '',
       loading: false
@@ -6257,42 +6357,44 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   mounted: function mounted() {},
   watch: {
     transaction: function transaction(newVal, oldVal) {
+      this.getTransactionGroups();
+      this.getFriends();
       this.getCards();
       this.getTransaction();
     }
   },
   methods: {
-    getCards: function getCards() {
-      var _this = this;
+    getTransactionGroups: function getTransactionGroups() {
+      var _arguments = arguments,
+          _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var url;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                url = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : '/api/v1/groups';
+                _context.next = 3;
                 return _auth_token__WEBPACK_IMPORTED_MODULE_1__["default"].getToken().then(function (value) {
                   _this.access_token = value;
                 });
 
-              case 2:
+              case 3:
                 axios({
-                  url: '/api/v1/cards?all=true',
+                  url: url,
                   method: 'get',
                   headers: {
                     'Authorization': "Bearer ".concat(_this.access_token),
                     'Content-Type': 'application/json'
                   }
                 }).then(function (response) {
-                  _this.card_options = [{
-                    value: null,
-                    name: 'No Card'
-                  }];
+                  _this.transaction_groups_options = [];
 
-                  for (var i = 0; i < response.data.length; i++) {
-                    _this.card_options.push({
-                      value: response.data.id,
-                      name: response.data.bank
+                  for (var i = 0; i < response.data.data.length; i++) {
+                    _this.transaction_groups_options.push({
+                      value: response.data.data[i].id,
+                      name: response.data.data[i].name
                     });
                   }
                 })["catch"](function (error) {
@@ -6301,7 +6403,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }
                 });
 
-              case 3:
+              case 4:
               case "end":
                 return _context.stop();
             }
@@ -6309,43 +6411,49 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee);
       }))();
     },
-    getTransaction: function getTransaction() {
-      var _this2 = this;
+    searchTransactionGroupsList: function searchTransactionGroupsList(value) {
+      this.getTransactionGroups('/api/v1/groups?search=' + value);
+    },
+    getFriends: function getFriends() {
+      var _arguments2 = arguments,
+          _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var url;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                _context2.next = 2;
+                url = _arguments2.length > 0 && _arguments2[0] !== undefined ? _arguments2[0] : '/api/v1/friends';
+                _context2.next = 3;
                 return _auth_token__WEBPACK_IMPORTED_MODULE_1__["default"].getToken().then(function (value) {
                   _this2.access_token = value;
                 });
 
-              case 2:
-                _this2.loading = true;
+              case 3:
                 axios({
-                  url: "/api/v1/transaction/".concat(_this2.transaction.data.id),
+                  url: url,
                   method: 'get',
                   headers: {
                     'Authorization': "Bearer ".concat(_this2.access_token),
                     'Content-Type': 'application/json'
                   }
                 }).then(function (response) {
-                  _this2.name = response.data.name;
-                  _this2.amount = response.data.raw_amount;
-                  _this2.type = response.data.type;
-                  _this2.date = response.data.raw_date;
-                  _this2.transaction_groups = response.data.transaction_groups;
-                  _this2.for_user = response.data.for_user;
-                  _this2.card = response.data.card;
-                  _this2.loading = false;
+                  _this2.for_user_options = [{
+                    value: null,
+                    name: 'Nobody'
+                  }];
+
+                  for (var i = 0; i < response.data.data.length; i++) {
+                    _this2.for_user_options.push({
+                      value: response.data.data[i].id,
+                      name: response.data.data[i].name + ' ' + response.data.data[i].family
+                    });
+                  }
                 })["catch"](function (error) {
                   if (error.response) {
                     _this2.error = error.response.data.error;
                   }
-
-                  _this2.loading = false;
                 });
 
               case 4:
@@ -6356,72 +6464,175 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee2);
       }))();
     },
-    submitTransaction: function submitTransaction() {
-      var _this3 = this;
+    searchFriendList: function searchFriendList(value) {
+      this.getFriends('/api/v1/friends?search=' + value);
+    },
+    getCards: function getCards() {
+      var _arguments3 = arguments,
+          _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-        var form_data;
+        var url;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                _context3.next = 2;
+                url = _arguments3.length > 0 && _arguments3[0] !== undefined ? _arguments3[0] : '/api/v1/cards';
+                _context3.next = 3;
                 return _auth_token__WEBPACK_IMPORTED_MODULE_1__["default"].getToken().then(function (value) {
                   _this3.access_token = value;
                 });
 
-              case 2:
-                form_data = new FormData();
-                form_data.append('_method', 'put');
-                form_data.append('name', _this3.name);
-                form_data.append('amount', _this3.amount);
-                form_data.append('type', _this3.type.value);
-                form_data.append('date', _this3.date);
-
-                if (_this3.transaction_groups) {
-                  form_data.append('transaction_groups', JSON.stringify(_this3.transaction_groups));
-                }
-
-                if (_this3.for_user.value) {
-                  form_data.append('for_user', _this3.for_user.value);
-                }
-
-                if (_this3.card.value) {
-                  form_data.append('card', _this3.card.value);
-                }
-
-                _this3.loading = true;
+              case 3:
                 axios({
-                  url: "/api/v1/transaction/".concat(_this3.transaction.data.id),
-                  method: 'post',
-                  data: form_data,
+                  url: url,
+                  method: 'get',
                   headers: {
                     'Authorization': "Bearer ".concat(_this3.access_token),
                     'Content-Type': 'application/json'
                   }
                 }).then(function (response) {
-                  _this3.$parent.$emit('close');
+                  _this3.card_options = [{
+                    value: null,
+                    name: 'No Card'
+                  }];
 
-                  _this3.$parent.$emit('edit_value', {
-                    index: _this3.transaction.index,
-                    data: response.data
-                  });
-
-                  _this3.loading = false;
+                  for (var i = 0; i < response.data.data.length; i++) {
+                    _this3.card_options.push({
+                      value: response.data.data[i].id,
+                      name: response.data.data[i].bank
+                    });
+                  }
                 })["catch"](function (error) {
                   if (error.response) {
                     _this3.error = error.response.data.error;
                   }
-
-                  _this3.loading = false;
                 });
 
-              case 13:
+              case 4:
               case "end":
                 return _context3.stop();
             }
           }
         }, _callee3);
+      }))();
+    },
+    searchCardList: function searchCardList(value) {
+      this.getCards('/api/v1/cards?search=' + value);
+    },
+    getTransaction: function getTransaction() {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return _auth_token__WEBPACK_IMPORTED_MODULE_1__["default"].getToken().then(function (value) {
+                  _this4.access_token = value;
+                });
+
+              case 2:
+                _this4.loading = true;
+                axios({
+                  url: "/api/v1/transaction/".concat(_this4.transaction.data.id),
+                  method: 'get',
+                  headers: {
+                    'Authorization': "Bearer ".concat(_this4.access_token),
+                    'Content-Type': 'application/json'
+                  }
+                }).then(function (response) {
+                  _this4.name = response.data.name;
+                  _this4.amount = response.data.raw_amount;
+                  _this4.type = response.data.type;
+                  _this4.date = response.data.raw_date;
+                  _this4.transaction_groups = response.data.transaction_groups;
+                  _this4.for_user = response.data.for_user;
+                  _this4.card = response.data.card;
+                  _this4.loading = false;
+                })["catch"](function (error) {
+                  if (error.response) {
+                    _this4.error = error.response.data.error;
+                  }
+
+                  _this4.loading = false;
+                });
+
+              case 4:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
+    submitTransaction: function submitTransaction() {
+      var _this5 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
+        var form_data;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return _auth_token__WEBPACK_IMPORTED_MODULE_1__["default"].getToken().then(function (value) {
+                  _this5.access_token = value;
+                });
+
+              case 2:
+                form_data = new FormData();
+                form_data.append('_method', 'put');
+                form_data.append('name', _this5.name);
+                form_data.append('amount', _this5.amount);
+                form_data.append('type', _this5.type.value);
+                form_data.append('date', _this5.date);
+
+                if (_this5.transaction_groups) {
+                  form_data.append('transaction_groups', JSON.stringify(_this5.transaction_groups));
+                }
+
+                if (_this5.for_user.value) {
+                  form_data.append('for_user', _this5.for_user.value);
+                }
+
+                if (_this5.card.value) {
+                  form_data.append('card', _this5.card.value);
+                }
+
+                _this5.loading = true;
+                axios({
+                  url: "/api/v1/transaction/".concat(_this5.transaction.data.id),
+                  method: 'post',
+                  data: form_data,
+                  headers: {
+                    'Authorization': "Bearer ".concat(_this5.access_token),
+                    'Content-Type': 'application/json'
+                  }
+                }).then(function (response) {
+                  _this5.$parent.$emit('close');
+
+                  _this5.$parent.$emit('edit_value', {
+                    index: _this5.transaction.index,
+                    data: response.data
+                  });
+
+                  _this5.loading = false;
+                })["catch"](function (error) {
+                  if (error.response) {
+                    _this5.error = error.response.data.error;
+                  }
+
+                  _this5.loading = false;
+                });
+
+              case 13:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
       }))();
     }
   }
@@ -6820,6 +7031,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -6882,8 +7097,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     });
     Promise.all([this.getCards(), this.getGroups()]).then(function () {
-      console.log(1);
-
       _this2.addOtherParams();
 
       _this2.getTransactions();
@@ -6906,16 +7119,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 url = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : '/api/v1/transaction';
                 first_time = _arguments.length > 1 && _arguments[1] !== undefined ? _arguments[1] : true;
-                console.log(1);
 
                 if (url) {
-                  _context.next = 5;
+                  _context.next = 4;
                   break;
                 }
 
                 return _context.abrupt("return", 0);
 
-              case 5:
+              case 4:
                 if (first_time) {
                   url += '?';
                 }
@@ -6932,12 +7144,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   url += "&group=".concat(_this3.group_filter.value);
                 }
 
-                _context.next = 11;
+                _context.next = 10;
                 return _auth_token__WEBPACK_IMPORTED_MODULE_1__["default"].getToken().then(function (value) {
                   _this3.access_token = value;
                 });
 
-              case 11:
+              case 10:
                 _this3.loading = true;
                 axios({
                   url: url,
@@ -6967,7 +7179,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this3.loading = false;
                 });
 
-              case 13:
+              case 12:
               case "end":
                 return _context.stop();
             }
@@ -6992,9 +7204,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
               case 3:
-                url += '?all=true';
+                // url += '?all=true';
                 done = false;
-                _context2.next = 7;
+                _context2.next = 6;
                 return axios({
                   url: url,
                   method: 'get',
@@ -7003,10 +7215,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     'Content-Type': 'application/json'
                   }
                 }).then(function (response) {
-                  for (var i = 0; i < response.data.length; i++) {
-                    _this4.card_filter_options[response.data[i].id] = {
-                      value: response.data[i].id,
-                      name: response.data[i].bank
+                  _this4.card_filter_options = {
+                    '0': {
+                      value: '',
+                      name: 'All'
+                    }
+                  };
+
+                  for (var i = 0; i < response.data.data.length; i++) {
+                    _this4.card_filter_options[response.data.data[i].id] = {
+                      value: response.data.data[i].id,
+                      name: response.data.data[i].bank
                     };
                   }
 
@@ -7015,20 +7234,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   done = true;
                 });
 
-              case 7:
+              case 6:
                 return _context2.abrupt("return", new Promise(function (resolve, reject) {
                   if (done) {
                     resolve();
                   }
                 }));
 
-              case 8:
+              case 7:
               case "end":
                 return _context2.stop();
             }
           }
         }, _callee2);
       }))();
+    },
+    searchCardList: function searchCardList(value) {
+      this.getCards('/api/v1/cards?search=' + value);
     },
     getGroups: function getGroups() {
       var _arguments3 = arguments,
@@ -7047,9 +7269,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
               case 3:
-                url += '?all=true';
+                // url += '?all=true';
                 done = false;
-                _context3.next = 7;
+                _context3.next = 6;
                 return axios({
                   url: url,
                   method: 'get',
@@ -7058,10 +7280,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     'Content-Type': 'application/json'
                   }
                 }).then(function (response) {
-                  for (var i = 0; i < response.data.length; i++) {
-                    _this5.group_filter_options[response.data[i].id] = {
-                      value: response.data[i].id,
-                      name: response.data[i].name
+                  _this5.group_filter_options = {
+                    '0': {
+                      value: '',
+                      name: 'All'
+                    }
+                  };
+
+                  for (var i = 0; i < response.data.data.length; i++) {
+                    _this5.group_filter_options[response.data.data[i].id] = {
+                      value: response.data.data[i].id,
+                      name: response.data.data[i].name
                     };
                   }
 
@@ -7070,20 +7299,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   done = true;
                 });
 
-              case 7:
+              case 6:
                 return _context3.abrupt("return", new Promise(function (resolve, reject) {
                   if (done) {
                     resolve();
                   }
                 }));
 
-              case 8:
+              case 7:
               case "end":
                 return _context3.stop();
             }
           }
         }, _callee3);
       }))();
+    },
+    searchGroupList: function searchGroupList(value) {
+      this.getGroups('/api/v1/groups?search=' + value);
     },
     addClicked: function addClicked() {
       this.$emit('add');
@@ -28453,22 +28685,54 @@ var render = function() {
                 }
               }
             },
-            _vm._l(_vm.options, function(option, i) {
-              return _c(
-                "li",
-                {
-                  key: i,
-                  on: {
-                    click: function($event) {
-                      return _vm.selectOption(option)
+            [
+              _vm.searchable
+                ? _c("div", { attrs: { name: "search" } }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.search_query,
+                          expression: "search_query"
+                        }
+                      ],
+                      attrs: { type: "text", placeholder: "Search" },
+                      domProps: { value: _vm.search_query },
+                      on: {
+                        input: [
+                          function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.search_query = $event.target.value
+                          },
+                          function($event) {
+                            return _vm.search()
+                          }
+                        ]
+                      }
+                    })
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm._l(_vm.options, function(option, i) {
+                return _c(
+                  "li",
+                  {
+                    key: i,
+                    on: {
+                      click: function($event) {
+                        return _vm.selectOption(option)
+                      }
                     }
-                  }
-                },
-                [_vm._t("option", null, { option: option })],
-                2
-              )
-            }),
-            0
+                  },
+                  [_vm._t("option", null, { option: option })],
+                  2
+                )
+              })
+            ],
+            2
           )
         : _vm._e()
     ]
@@ -28600,22 +28864,54 @@ var render = function() {
                 }
               }
             },
-            _vm._l(_vm.options, function(option, i) {
-              return _c(
-                "li",
-                {
-                  key: i,
-                  on: {
-                    click: function($event) {
-                      return _vm.selectOption(option)
+            [
+              _vm.searchable
+                ? _c("div", { attrs: { name: "search" } }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.search_query,
+                          expression: "search_query"
+                        }
+                      ],
+                      attrs: { type: "text", placeholder: "Search" },
+                      domProps: { value: _vm.search_query },
+                      on: {
+                        input: [
+                          function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.search_query = $event.target.value
+                          },
+                          function($event) {
+                            return _vm.search()
+                          }
+                        ]
+                      }
+                    })
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm._l(_vm.options, function(option, i) {
+                return _c(
+                  "li",
+                  {
+                    key: i,
+                    on: {
+                      click: function($event) {
+                        return _vm.selectOption(option)
+                      }
                     }
-                  }
-                },
-                [_vm._t("option", null, { option: option })],
-                2
-              )
-            }),
-            0
+                  },
+                  [_vm._t("option", null, { option: option })],
+                  2
+                )
+              })
+            ],
+            2
           )
         : _vm._e()
     ]
@@ -29073,12 +29369,14 @@ var render = function() {
           attrs: {
             values: _vm.transaction_groups,
             placeholder: "Transaction Group",
+            searchable: true,
             options: _vm.transaction_groups_options
           },
           on: {
             "update:values": function($event) {
               _vm.transaction_groups = $event
-            }
+            },
+            search: _vm.searchTransactionGroupsList
           },
           scopedSlots: _vm._u([
             {
@@ -29106,12 +29404,14 @@ var render = function() {
           attrs: {
             value: _vm.for_user,
             placeholder: "For User",
+            searchable: true,
             options: _vm.for_user_options
           },
           on: {
             "update:value": function($event) {
               _vm.for_user = $event
-            }
+            },
+            search: _vm.searchFriendList
           },
           scopedSlots: _vm._u([
             {
@@ -29132,12 +29432,14 @@ var render = function() {
           attrs: {
             value: _vm.card,
             placeholder: "Card",
+            searchable: true,
             options: _vm.card_options
           },
           on: {
             "update:value": function($event) {
               _vm.card = $event
-            }
+            },
+            search: _vm.searchCardList
           },
           scopedSlots: _vm._u([
             {
@@ -29379,11 +29681,16 @@ var render = function() {
           attrs: {
             values: _vm.transaction_groups,
             placeholder: "Transaction Group",
+            searchable: true,
             options: _vm.transaction_groups_options
           },
           on: {
             "update:values": function($event) {
               _vm.transaction_groups = $event
+            },
+            search: _vm.searchTransactionGroupsList,
+            "update:options": function($event) {
+              _vm.transaction_groups_options = $event
             }
           },
           scopedSlots: _vm._u([
@@ -29412,11 +29719,16 @@ var render = function() {
           attrs: {
             value: _vm.for_user,
             placeholder: "For User",
+            searchable: true,
             options: _vm.for_user_options
           },
           on: {
             "update:value": function($event) {
               _vm.for_user = $event
+            },
+            search: _vm.searchFriendList,
+            "update:options": function($event) {
+              _vm.for_user_options = $event
             }
           },
           scopedSlots: _vm._u([
@@ -29438,11 +29750,16 @@ var render = function() {
           attrs: {
             value: _vm.card,
             placeholder: "Card",
+            searchable: true,
             options: _vm.card_options
           },
           on: {
             "update:value": function($event) {
               _vm.card = $event
+            },
+            search: _vm.searchCardList,
+            "update:options": function($event) {
+              _vm.card_options = $event
             }
           },
           scopedSlots: _vm._u([
@@ -29759,7 +30076,8 @@ var render = function() {
               attrs: {
                 value: _vm.card_filter,
                 placeholder: "Cards",
-                options: _vm.card_filter_options
+                options: _vm.card_filter_options,
+                searchable: true
               },
               on: {
                 "update:value": [
@@ -29769,7 +30087,8 @@ var render = function() {
                   function($event) {
                     return _vm.getTransactions()
                   }
-                ]
+                ],
+                search: _vm.searchCardList
               },
               scopedSlots: _vm._u([
                 {
@@ -29791,7 +30110,8 @@ var render = function() {
               attrs: {
                 value: _vm.group_filter,
                 placeholder: "Groups",
-                options: _vm.group_filter_options
+                options: _vm.group_filter_options,
+                searchable: true
               },
               on: {
                 "update:value": [
@@ -29801,7 +30121,8 @@ var render = function() {
                   function($event) {
                     return _vm.getTransactions()
                   }
-                ]
+                ],
+                search: _vm.searchGroupList
               },
               scopedSlots: _vm._u([
                 {

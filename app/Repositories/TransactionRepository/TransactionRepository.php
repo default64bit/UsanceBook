@@ -40,7 +40,7 @@ class TransactionRepository extends BaseRepository implements TransactionReposit
             $insert = [];
             foreach($transaction_groups as $g_id => $transaction_group){
                 $insert[] = [
-                    'group_id' => $g_id,
+                    'group_id' => $transaction_group['value'],
                     'transaction_id' => $new_transaction->id,
                     'created_at' => date('Y/m/d H:i:s'),
                     'updated_at' => date('Y/m/d H:i:s'),
@@ -70,7 +70,7 @@ class TransactionRepository extends BaseRepository implements TransactionReposit
             $insert = [];
             foreach($transaction_groups as $g_id => $transaction_group){
                 $insert[] = [
-                    'group_id' => $g_id,
+                    'group_id' => $transaction_group['value'],
                     'transaction_id' => $transaction->id,
                     'created_at' => date('Y/m/d H:i:s'),
                     'updated_at' => date('Y/m/d H:i:s'),
@@ -84,7 +84,7 @@ class TransactionRepository extends BaseRepository implements TransactionReposit
 
     public function read($id){
         return $this->transaction->where('id',$id)
-            ->with(['user','card','groups','for_user'])
+            ->with(['user','card','groups.group','for_user'])
             ->first();
     }
 

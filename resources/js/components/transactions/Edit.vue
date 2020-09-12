@@ -15,19 +15,25 @@
             <input-box v-model="date" type="text" placeholder="Date (yyyy/mm/dd hh:mm:ss)" mask="####/##/## ##:##:##"></input-box>
         </div>
         <div class="input_group">
-            <multi-select-box :values.sync="transaction_groups" placeholder="Transaction Group" :options="transaction_groups_options">
+            <multi-select-box :values.sync="transaction_groups" placeholder="Transaction Group"
+                :searchable="true" @search="searchTransactionGroupsList"
+                :options.sync="transaction_groups_options">
                 <template v-slot:option="{option}">
                     <span :value="option.value">{{option.name}}</span>
                 </template>
             </multi-select-box>
         </div>
         <div class="input_group">
-            <select-box :value.sync="for_user" placeholder="For User" :options="for_user_options">
+            <select-box :value.sync="for_user" placeholder="For User"
+                :searchable="true" @search="searchFriendList"
+                :options.sync="for_user_options">
                 <template v-slot:option="{option}">
                     <span :value="option.value">{{option.name}}</span>
                 </template>
             </select-box>
-            <select-box :value.sync="card" placeholder="Card" :options="card_options">
+            <select-box :value.sync="card" placeholder="Card"
+                :searchable="true" @search="searchCardList"
+                :options.sync="card_options">
                 <template v-slot:option="{option}">
                     <span :value="option.value">{{option.name}}</span>
                 </template>
@@ -72,19 +78,9 @@
                     { value:'+', name:'Gain' },
                     { value:'-', name:'Loss' },
                 ],
-                transaction_groups_options: [
-                    { value:'2', name:'Group1' },
-                ],
-                for_user_options: [
-                    { value:null, name:'Nobody' },
-                    { value:'3', name:'Gourge' },
-                    { value:'2', name:'Fred' },
-                ],
-                card_options: [
-                    { value:null, name:'No Card' },
-                    { value:'23', name:'Bank Mellat' },
-                    { value:'13', name:'Bank Sepah' },
-                ],
+                transaction_groups_options: [],
+                for_user_options: [],
+                card_options: [],
 
                 access_token: '',
                 error: '',
@@ -96,16 +92,77 @@
         },
         watch: { 
             transaction: function(newVal,oldVal) {
+                this.getTransactionGroups();
+                this.getFriends();
                 this.getCards();
+                
                 this.getTransaction();
             }
         },
         methods: {
-            async getCards(){
+            async getTransactionGroups(url = '/api/v1/groups'){
                 await token.getToken().then((value)=>{ this.access_token = value; });
 
                 axios({
-                    url: '/api/v1/cards?all=true',
+                    url: url,
+                    method: 'get',
+                    headers: {
+                        'Authorization': `Bearer ${this.access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                }).then(response=>{
+                    this.transaction_groups_options = [];
+                    for(let i=0; i<response.data.data.length; i++){
+                        this.transaction_groups_options.push({
+                            value: response.data.data[i].id,
+                            name: response.data.data[i].name,
+                        });
+                    }
+                }).catch(error=>{
+                    if(error.response){
+                        this.error = error.response.data.error
+                    }
+                });
+            },
+            searchTransactionGroupsList(value){
+                this.getTransactionGroups('/api/v1/groups?search='+value);
+            },
+
+            async getFriends(url = '/api/v1/friends'){
+                await token.getToken().then((value)=>{ this.access_token = value; });
+
+                axios({
+                    url: url,
+                    method: 'get',
+                    headers: {
+                        'Authorization': `Bearer ${this.access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                }).then(response=>{
+                    this.for_user_options = [
+                        { value:null, name:'Nobody' }
+                    ];
+                    for(let i=0; i<response.data.data.length; i++){
+                        this.for_user_options.push({
+                            value: response.data.data[i].id,
+                            name: response.data.data[i].name+' '+response.data.data[i].family,
+                        });
+                    }
+                }).catch(error=>{
+                    if(error.response){
+                        this.error = error.response.data.error
+                    }
+                });
+            },
+            searchFriendList(value){
+                this.getFriends('/api/v1/friends?search='+value);
+            },
+
+            async getCards(url = '/api/v1/cards'){
+                await token.getToken().then((value)=>{ this.access_token = value; });
+
+                axios({
+                    url: url,
                     method: 'get',
                     headers: {
                         'Authorization': `Bearer ${this.access_token}`,
@@ -115,10 +172,10 @@
                     this.card_options = [
                         { value:null, name:'No Card' }
                     ];
-                    for(let i=0; i<response.data.length; i++){
+                    for(let i=0; i<response.data.data.length; i++){
                         this.card_options.push({
-                            value: response.data.id,
-                            name: response.data.bank,
+                            value: response.data.data[i].id,
+                            name: response.data.data[i].bank,
                         });
                     }
                 }).catch(error=>{
@@ -126,6 +183,9 @@
                         this.error = error.response.data.error
                     }
                 });
+            },
+            searchCardList(value){
+                this.getCards('/api/v1/cards?search='+value);
             },
 
             async getTransaction(){

@@ -20,6 +20,7 @@ class FriendResource extends JsonResource
         }else{ $friend = $this->whom; }
 
         return [
+            'id' => $friend->id,
             'avatar' => $friend->avatar,
             'name' => ucfirst($friend->name),
             'family' => ucfirst($friend->family),
