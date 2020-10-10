@@ -12,7 +12,7 @@
             </select-box>
         </div>
         <div class="input_group">
-            <input-box v-model="date" type="text" placeholder="Date (yyyy/mm/dd hh:mm:ss)" mask="####/##/## ##:##:##"></input-box>
+            <input-box v-model="date" type="text" placeholder="Date (YYYY/MM/DD hh:mm:ss)" mask="####/##/## ##:##:##"></input-box>
         </div>
         <div class="input_group">
             <multi-select-box :values.sync="transaction_groups" placeholder="Transaction Group"

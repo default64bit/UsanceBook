@@ -19,7 +19,7 @@ class Card extends Model
         'bank', 'number'
     ];
 
-    const PER_PAGE = 30;
+    const PER_PAGE = 15;
 
     /*relation*/
     public function user(){

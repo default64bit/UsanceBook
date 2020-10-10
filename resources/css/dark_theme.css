@@ -1,0 +1,22 @@
+:root{
+    --main_background_color: #353535;
+    --main_text_color: #fff;
+    --main_border_color: #5c5c5c;
+    --main_box_shadow: 0px 20px 20px -15px rgba(0,0,0,.7);
+    --placeholder_color: #a3b1c2;
+
+    --default_button_color: #5f5f5f;
+    --secondary_button_color: #d3d3d3;
+
+    --dark_blue: #ccf9ff;
+    --light_blue: #0091a5;
+
+    --dark_red: #ffc4bc;
+    --light_red: #da6555;
+
+    --dark_green: #e5ffcc;
+    --light_green: #a0d66e;
+
+    --dark_yellow: #fffacc;
+    --light_yellow: #ece17e;
+}

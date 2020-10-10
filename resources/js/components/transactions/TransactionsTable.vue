@@ -60,7 +60,7 @@
                         <b>{{transaction.unit}}</b>
                     </td>
                     <td>{{transaction.card.name}}</td>
-                    <td>{{transaction.date}}</td>
+                    <td name="date">{{transaction.date}}</td>
                     <td class="actions">
                         <i class="fas fa-ellipsis-v" @mouseup="toggle_menu(i,true)"></i>
                         <ul :open="transaction.menu" @mouseenter="transaction.can_close=false" @mouseleave="transaction.can_close=true">

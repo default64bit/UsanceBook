@@ -130,7 +130,7 @@ class TransactionRepository extends BaseRepository implements TransactionReposit
             ])->thenReturn();
 
         $all_transactions = $all_transactions->with(['user','card'])
-            ->latest()
+            ->orderBy('date','desc')
             ->paginate($per_page);
 
         return $all_transactions;

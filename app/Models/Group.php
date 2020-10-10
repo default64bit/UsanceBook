@@ -30,7 +30,7 @@ class Group extends Model
         'name',
     ];
 
-    const PER_PAGE = 30;
+    const PER_PAGE = 15;
 
     /*relation*/
     public function owner(){

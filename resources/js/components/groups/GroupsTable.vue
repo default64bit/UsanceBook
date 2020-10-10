@@ -26,6 +26,7 @@
                             <li><button class="btn" @click="editClicked(i)"><i class="far fa-pencil-alt mr-2"></i> Edit</button></li>
                             <li><button class="btn" @click="deleteClicked(i)"><i class="far fa-trash-alt mr-2"></i> Delete</button></li>
                             <li><button class="btn" @click="goToTransactions(i)"><i class="far fa-newspaper mr-2"></i> Transactions</button></li>
+                            <li><button class="btn"><router-link :to="`/groups/${group.id}/statistics`" class="btn"><i class="far fa-chart-line mr-2"></i> Statistics</router-link></button></li>
                         </ul>
                     </td>
                 </tr>

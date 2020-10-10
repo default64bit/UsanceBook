@@ -26,6 +26,11 @@
                     <span>Friends</span>
                 </router-link>
             </li>
+            <li :selected="$route.name=='profile'">
+                <router-link to="/Profile">
+                    <span>Profile</span>
+                </router-link>
+            </li>
             <li>
                 <button>
                     <i class="fas fa-bell"></i>

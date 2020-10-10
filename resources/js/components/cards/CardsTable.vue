@@ -8,7 +8,7 @@
         <table>
             <tbody v-if="cards.length>0">
                 <tr v-for="(card,i) in cards" :key="i" :class="['card_style'+((i%4)+1)]">
-                    <td class="mr-0 ml-auto">{{card.bank}}</td>
+                    <td class="mr-0 ml-auto text-yellow-800"><strong>{{card.bank}}</strong></td>
                     <td><img src="/assets/sim.svg" alt=""></td>
                     <td class="py-4 Roboto text-center" name="number">{{card.number}}</td>
                     <td class="mb-0 mt-auto">{{card.user.name}} {{card.user.family}}</td>
@@ -18,6 +18,7 @@
                             <li><button class="btn" @click="editClicked(i)"><i class="far fa-pencil-alt mr-2"></i> Edit</button></li>
                             <li><button class="btn" @click="deleteClicked(i)"><i class="far fa-trash-alt mr-2"></i> Delete</button></li>
                             <li><button class="btn" @click="goToTransactions(i)"><i class="far fa-newspaper mr-2"></i> Transactions</button></li>
+                            <li><button class="btn"><i class="far fa-chart-line mr-2"></i> Statistics</button></li>
                         </ul>
                     </td>
                 </tr>

@@ -62,4 +62,19 @@ class GroupRepository extends BaseRepository implements GroupRepositoryInterface
         return $all_groups;
     }
 
+    public function getStatistics($group_id,$user,$period,$from_date=null,$to_date=null){
+        $group = $this->group->where('id',$group_id)->where('owner_id',$user->id)->first();
+        $transaction_groups = $group->transactions();
+
+        if($from_date || $to_date){
+            $transaction_groups->whereHas('transaction',function($query) use($from_date,$to_date){
+                if($from_date){ $query->where('date','>=',$from_date); }
+                if($to_date){ $query->where('date','<=',$to_date); }
+            });
+        }
+        
+        $transaction_groups = $transaction_groups->with(['transaction'])->get();
+        return $transaction_groups;
+    }
+
 }

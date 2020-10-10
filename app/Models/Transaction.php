@@ -19,7 +19,7 @@ class Transaction extends Model
         'title', 'amount', 'date'
     ];
     
-    const PER_PAGE = 30;
+    const PER_PAGE = 15;
 
     /*relation*/
     public function user(){

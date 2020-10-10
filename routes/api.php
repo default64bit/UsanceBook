@@ -22,9 +22,10 @@ Route::group(['middleware'=>['auth:api'], 'namespace'=>'Api'], function(){
         Route::post('friends/request/{email}/accept','FriendsController@accept_friend_request');
         Route::post('friends/request/{email}/reject','FriendsController@reject_friend_request');
         Route::apiResource('friends','FriendsController');
-
+        
         Route::apiResource('cards','CardsController');
-
+        
         Route::apiResource('groups','GroupsController');
+        Route::post('groups/{id}/statistics','GroupsController@statistics');
     });
 });

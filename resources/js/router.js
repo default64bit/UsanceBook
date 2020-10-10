@@ -22,6 +22,7 @@ import Cards from './components/cards/Cards';
 // =================================
 
 import Groups from './components/groups/Groups';
+import GroupsStatistics from './components/groups/Statistics';
 
 // =================================
 
@@ -55,6 +56,7 @@ export default new VueRouter({
         // =================================
 
         { path: '/groups', component: Groups, name: 'groups' },
+        { path: '/groups/:group_id/statistics', component: GroupsStatistics, name: 'groups' },
 
         // =================================
 

@@ -65,7 +65,7 @@ class TransactionResource extends JsonResource
             'for_user' => $for_user,
             'transaction_groups' => $transaction_groups,
             'card' => $card,
-            'date' => date('d M,Y',strtotime($this->date)),
+            'date' => jdate($this->date)->format('Y, d F'),
             'raw_date' => Jalalian::forge($this->date)->format('%Y/%m/%d H:i:s'),
         ];
     }
