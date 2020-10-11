@@ -18,6 +18,7 @@ import Transactions from './components/transactions/Transactions';
 // =================================
 
 import Cards from './components/cards/Cards';
+import CardsStatistics from './components/cards/Statistics';
 
 // =================================
 
@@ -52,6 +53,7 @@ export default new VueRouter({
         // =================================
 
         { path: '/cards', component: Cards, name: 'cards' },
+        { path: '/cards/:card_id/statistics', component: CardsStatistics, name: 'cards' },
 
         // =================================
 

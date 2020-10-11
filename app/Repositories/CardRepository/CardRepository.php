@@ -59,4 +59,17 @@ class CardRepository extends BaseRepository implements CardRepositoryInterface
         return $all_cards;
     }
 
+    public function getStatistics($card_id,$user,$period,$from_date=null,$to_date=null){
+        $card = $this->card->where('id',$card_id)->where('user_id',$user->id)->first();
+        $card_transactions = $card->transactions();
+
+        if($from_date || $to_date){
+            if($from_date){ $card_transactions->where('date','>=',$from_date); }
+            if($to_date){ $card_transactions->where('date','<=',$to_date); }
+        }
+        
+        $card_transactions = $card_transactions->get();
+        return $card_transactions;
+    }
+
 }

@@ -24,6 +24,7 @@ Route::group(['middleware'=>['auth:api'], 'namespace'=>'Api'], function(){
         Route::apiResource('friends','FriendsController');
         
         Route::apiResource('cards','CardsController');
+        Route::post('cards/{id}/statistics','CardsController@statistics');
         
         Route::apiResource('groups','GroupsController');
         Route::post('groups/{id}/statistics','GroupsController@statistics');

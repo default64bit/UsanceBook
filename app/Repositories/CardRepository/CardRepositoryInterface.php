@@ -15,5 +15,7 @@ interface CardRepositoryInterface extends BaseRepositoryInterface
     public function read($id);
 
     public function all_cards($search=null,$user_id,$per_page);
+
+    public function getStatistics($group_id,$user,$period,$from_date=null,$to_date=null);
     
 }

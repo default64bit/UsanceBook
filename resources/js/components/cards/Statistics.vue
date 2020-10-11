@@ -3,7 +3,7 @@
         <div class="group_statistics" v-if="!loading">
             <div class="flex flex-wrap justify-between items-end">
                 <div class="flex flex-col">
-                    <h1 class="my-8">{{group.name}}</h1>
+                    <h1 class="my-8">{{card.bank}} Card</h1>
                     <date-range-picker :value.sync="date_range" placeholder="Date Range" @update:value="getData()"></date-range-picker>
                     <select-box :value.sync="chart_type" placeholder="Chart Type" :options="chart_type_options">
                         <template v-slot:option="{option}">
@@ -61,7 +61,7 @@
     import VueApexCharts from 'vue-apexcharts'
 
     export default {
-        name: 'GroupsStatistics',
+        name: 'CardsStatistics',
         components: {
             'loading': Loading,
             'pop-up-dialog': PopUpDialog,
@@ -74,7 +74,7 @@
                 loading: true,
                 access_token: null,
 
-                group: {},
+                card: {},
 
                 period: 'daily',
                 date_range: {},
@@ -120,7 +120,7 @@
             this.loading = false;
         },
         mounted(){
-            this.getGroup();
+            this.getCard();
             this.getData();
         },
         computed: {
@@ -134,19 +134,19 @@
             },
         },
         methods: {
-            async getGroup(){
+            async getCard(){
                 await token.getToken().then((value)=>{ this.access_token = value; });
 
                 this.loading = true;
                 axios({
-                    url: `/api/v1/groups/${this.$route.params.group_id}`,
+                    url: `/api/v1/cards/${this.$route.params.card_id}`,
                     method: 'get',
                     headers: {
                         'Authorization': `Bearer ${this.access_token}`,
                         'Content-Type': 'application/json'
                     },
                 }).then(response=>{
-                    this.group = response.data;
+                    this.card = response.data;
                     this.loading = false;
                 }).catch(error=>{
                     if(error.response){
@@ -166,7 +166,7 @@
 
                 this.loading = true;
                 axios({
-                    url: `/api/v1/groups/${this.$route.params.group_id}/statistics`,
+                    url: `/api/v1/cards/${this.$route.params.card_id}/statistics`,
                     data: form_data,
                     method: 'post',
                     headers: {
